@@ -96,7 +96,7 @@
 .grid-container {
   position: relative;
   margin: 20px auto;
-  max-width: 500px;
+  width: fit-content;
 }
 
 .connection-lines {
@@ -139,7 +139,8 @@
 .grid {
   display: grid;
   gap: 8px;
-  max-width: 500px;
+  width: fit-content;
+  margin: 0 auto;
   user-select: none;
   touch-action: none;
   position: relative;
@@ -147,7 +148,8 @@
 }
 
 .cell {
-  aspect-ratio: 1;
+  width: 44px;
+  height: 44px;
   display: flex;
   align-items: center;
   justify-content: center;
