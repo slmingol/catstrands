@@ -6,6 +6,7 @@ function StrandsGame({ puzzle }) {
   
   const [selectedCells, setSelectedCells] = useState([]);
   const [foundWords, setFoundWords] = useState([]);
+  const [foundWordPaths, setFoundWordPaths] = useState([]); // Store cell paths for each found word
   const [isSelecting, setIsSelecting] = useState(false);
   const [usedCells, setUsedCells] = useState(new Set());
   const [currentWord, setCurrentWord] = useState('');
@@ -71,6 +72,7 @@ function StrandsGame({ puzzle }) {
     
     if (isValidWord && !foundWords.includes(word)) {
       setFoundWords([...foundWords, word]);
+      setFoundWordPaths([...foundWordPaths, { word, cells: [...selectedCells], isSpangram }]); // Store the path
       setUsedCells(new Set([...usedCells, ...selectedCells]));
       
       if (isSpangram) {
@@ -90,6 +92,11 @@ function StrandsGame({ puzzle }) {
 
   const getCellClass = (index) => {
     if (usedCells.has(index)) {
+      // Check if this cell is part of the spangram
+      const spangramPath = foundWordPaths.find(wp => wp.isSpangram);
+      if (spangramPath && spangramPath.cells.includes(index)) {
+        return 'cell found spangram';
+      }
       return 'cell found';
     }
     if (selectedCells.includes(index)) return 'cell selected';
@@ -141,6 +148,29 @@ function StrandsGame({ puzzle }) {
 
       <div className="grid-container">
         <svg className="connection-lines" viewBox="0 0 100 100" preserveAspectRatio="none">
+          {/* Lines for found words */}
+          {foundWordPaths.map((wordPath, pathIndex) => {
+            return wordPath.cells.map((cellIndex, i) => {
+              if (i === 0) return null;
+              const prevCell = wordPath.cells[i - 1];
+              const currentCell = cellIndex;
+              const start = getCellCenter(prevCell);
+              const end = getCellCenter(currentCell);
+              
+              return (
+                <line
+                  key={`found-${pathIndex}-${i}`}
+                  x1={`${start.x}%`}
+                  y1={`${start.y}%`}
+                  x2={`${end.x}%`}
+                  y2={`${end.y}%`}
+                  className={wordPath.isSpangram ? "connection-line-spangram" : "connection-line-found"}
+                />
+              );
+            });
+          })}
+          
+          {/* Lines for current selection */}
           {selectedCells.length > 1 && selectedCells.map((cellIndex, i) => {
             if (i === 0) return null; // Skip first cell as it has no previous cell
             const prevCell = selectedCells[i - 1];

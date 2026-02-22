@@ -118,6 +118,24 @@
   filter: drop-shadow(0 2px 4px rgba(243, 156, 18, 0.4));
 }
 
+.connection-line-found {
+  stroke: #0984e3;
+  stroke-width: 0.8;
+  stroke-linecap: round;
+  fill: none;
+  opacity: 0.9;
+  filter: drop-shadow(0 2px 4px rgba(9, 132, 227, 0.4));
+}
+
+.connection-line-spangram {
+  stroke: #e84393;
+  stroke-width: 0.8;
+  stroke-linecap: round;
+  fill: none;
+  opacity: 0.9;
+  filter: drop-shadow(0 2px 4px rgba(232, 67, 147, 0.4));
+}
+
 .grid {
   display: grid;
   gap: 8px;
