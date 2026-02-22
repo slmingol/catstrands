@@ -38,6 +38,9 @@
   margin-bottom: 8px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  background: #aedfee;
+  padding: 8px 12px;
+  border-radius: 6px;
 }
 
 .theme-value {
@@ -45,7 +48,7 @@
   font-weight: 600;
   color: #2d3748;
   padding: 12px 16px;
-  background: #f7fafc;
+  background: white;
   border-radius: 8px;
   border: 2px solid #e2e8f0;
 }
