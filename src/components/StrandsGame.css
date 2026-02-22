@@ -183,7 +183,7 @@
 
 .connection-line {
   stroke: #8b9d91;
-  stroke-width: 1.2;
+  stroke-width: 2.2;
   stroke-linecap: round;
   fill: none;
   opacity: 0.9;
@@ -192,7 +192,7 @@
 
 .connection-line-found {
   stroke: #5a94e6;
-  stroke-width: 1.2;
+  stroke-width: 2.2;
   stroke-linecap: round;
   fill: none;
   opacity: 0.9;
@@ -201,7 +201,7 @@
 
 .connection-line-spangram {
   stroke: #5a94e6;
-  stroke-width: 1.2;
+  stroke-width: 2.2;
   stroke-linecap: round;
   fill: none;
   opacity: 0.9;
