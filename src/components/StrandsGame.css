@@ -182,12 +182,12 @@
 }
 
 .connection-line {
-  stroke: #b3c5b9;
+  stroke: #d0dcd5;
   stroke-width: 2.2;
   stroke-linecap: round;
   fill: none;
   opacity: 0.9;
-  filter: drop-shadow(0 2px 4px rgba(179, 197, 185, 0.4));
+  filter: drop-shadow(0 2px 4px rgba(208, 220, 213, 0.4));
 }
 
 .connection-line-found {
@@ -242,9 +242,9 @@
 }
 
 .cell.selected {
-  background: #b3c5b9;
+  background: #d0dcd5;
   color: #2d3748;
-  border-color: #b3c5b9;
+  border-color: #d0dcd5;
   animation: pulse 0.3s;
 }
 
