@@ -133,50 +133,43 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-  border-radius: 12px;
+  background: transparent;
   font-size: 1.8rem;
   font-weight: bold;
   cursor: pointer;
   transition: all 0.15s;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
   color: #2d3748;
   text-transform: uppercase;
-  border: 3px solid transparent;
   position: relative;
   z-index: 2;
 }
 
 .cell:hover {
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-  filter: brightness(1.05);
+  color: #667eea;
 }
 
 .cell.selected {
-  background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
-  box-shadow: 0 6px 16px rgba(253, 203, 110, 0.5);
-  border: 3px solid #f39c12;
+  color: #f39c12;
   animation: pulse 0.3s;
 }
 
 .cell.found {
-  background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
-  color: white;
+  color: #0984e3;
   cursor: default;
   animation: found 0.4s;
 }
 
 .cell.found.spangram {
-  background: linear-gradient(135deg, #fd79a8 0%, #e84393 100%);
+  color: #e84393;
   animation: spangram 0.6s;
 }
 
 @keyframes pulse {
   0%, 100% {
-    box-shadow: 0 6px 16px rgba(253, 203, 110, 0.5);
+    transform: scale(1);
   }
   50% {
-    box-shadow: 0 8px 20px rgba(253, 203, 110, 0.7);
+    transform: scale(1.1);
   }
 }
 
@@ -185,8 +178,7 @@
     opacity: 1;
   }
   50% {
-    opacity: 0.8;
-    box-shadow: 0 6px 20px rgba(9, 132, 227, 0.6);
+    opacity: 0.5;
   }
   100% {
     opacity: 1;
@@ -198,16 +190,13 @@
     opacity: 1;
   }
   25% {
-    opacity: 0.8;
-    box-shadow: 0 8px 24px rgba(232, 67, 147, 0.7);
+    opacity: 0.5;
   }
   50% {
-    opacity: 0.9;
-    box-shadow: 0 6px 20px rgba(232, 67, 147, 0.6);
+    opacity: 1;
   }
   75% {
-    opacity: 0.8;
-    box-shadow: 0 8px 24px rgba(232, 67, 147, 0.7);
+    opacity: 0.5;
   }
   100% {
     opacity: 1;
