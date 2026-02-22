@@ -16,11 +16,6 @@ function App() {
 
   return (
     <div className="app">
-      <header className="app-header">
-        <h1>🐱 CatStrands</h1>
-        <p className="subtitle">Find themed words by connecting adjacent letters</p>
-      </header>
-
       <StrandsGame 
         puzzle={currentPuzzle} 
       />

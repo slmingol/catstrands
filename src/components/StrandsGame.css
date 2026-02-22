@@ -16,7 +16,8 @@
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
+  padding-top: 10px;
 }
 
 .date-display {
