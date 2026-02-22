@@ -142,6 +142,8 @@
   text-transform: uppercase;
   position: relative;
   z-index: 2;
+  border: 3px solid transparent;
+  border-radius: 50%;
 }
 
 .cell:hover {
@@ -150,17 +152,20 @@
 
 .cell.selected {
   color: #f39c12;
+  border-color: #f39c12;
   animation: pulse 0.3s;
 }
 
 .cell.found {
   color: #0984e3;
+  border-color: #0984e3;
   cursor: default;
   animation: found 0.4s;
 }
 
 .cell.found.spangram {
   color: #e84393;
+  border-color: #e84393;
   animation: spangram 0.6s;
 }
 
