@@ -11,7 +11,6 @@ function StrandsGame({ puzzle }) {
   const [usedCells, setUsedCells] = useState(new Set());
   const [currentWord, setCurrentWord] = useState('');
   const [message, setMessage] = useState('');
-  const [showTheme, setShowTheme] = useState(false);
 
   // Check if game is won
   const isGameWon = foundWords.length === words.length + 1; // +1 for spangram
@@ -117,12 +116,8 @@ function StrandsGame({ puzzle }) {
     <div className="strands-game">
       <div className="left-panel">
         <div className="theme-section">
-          <button 
-            className="theme-button"
-            onClick={() => setShowTheme(!showTheme)}
-          >
-            {showTheme ? `Theme: ${theme}` : 'Show Theme'}
-          </button>
+          <div className="theme-title">Today's theme</div>
+          <div className="theme-value">{theme}</div>
         </div>
         
         <div className="current-word">
