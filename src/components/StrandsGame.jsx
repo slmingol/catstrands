@@ -11,6 +11,8 @@ function StrandsGame({ puzzle }) {
   const [usedCells, setUsedCells] = useState(new Set());
   const [currentWord, setCurrentWord] = useState('');
   const [message, setMessage] = useState('');
+  const [hintsUsed, setHintsUsed] = useState(0);
+  const [revealedHints, setRevealedHints] = useState([]);
 
   // Check if game is won
   const isGameWon = foundWords.length === words.length + 1; // +1 for spangram
@@ -112,6 +114,24 @@ function StrandsGame({ puzzle }) {
     return { x, y };
   };
 
+  const handleHint = () => {
+    // Get list of all theme words including spangram
+    const allWords = [...words, spangram];
+    // Filter out already found words
+    const unfoundWords = allWords.filter(w => !foundWords.includes(w.toUpperCase()));
+    
+    if (unfoundWords.length === 0) {
+      setMessage('All words already found!');
+      return;
+    }
+    
+    // Pick a random unfound word to reveal
+    const hintWord = unfoundWords[Math.floor(Math.random() * unfoundWords.length)];
+    setRevealedHints([...revealedHints, hintWord.toUpperCase()]);
+    setHintsUsed(hintsUsed + 1);
+    setMessage(`💡 Hint: Look for "${hintWord.toUpperCase()}"`);
+  };
+
   return (
     <div className="strands-game">
       <div className="left-panel">
@@ -132,6 +152,19 @@ function StrandsGame({ puzzle }) {
               </span>
             ))}
           </div>
+        </div>
+
+        <div className="hint-section">
+          <button 
+            className="hint-button"
+            onClick={handleHint}
+            disabled={isGameWon}
+          >
+            💡 Hint
+          </button>
+          {hintsUsed > 0 && (
+            <div className="hints-count">Hints used: {hintsUsed}</div>
+          )}
         </div>
         
         <div className="current-word">

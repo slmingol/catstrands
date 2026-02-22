@@ -288,6 +288,44 @@
   box-shadow: 0 4px 12px rgba(232, 67, 147, 0.4);
 }
 
+.hint-section {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.hint-button {
+  background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+  color: #2d3748;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 12px rgba(253, 203, 110, 0.3);
+}
+
+.hint-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(253, 203, 110, 0.4);
+}
+
+.hint-button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.hint-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.hints-count {
+  margin-top: 10px;
+  font-size: 0.875rem;
+  color: #666;
+}
+
 @keyframes slideIn {
   from {
     opacity: 0;
