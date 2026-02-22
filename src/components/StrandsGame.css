@@ -157,14 +157,16 @@
 }
 
 .cell.found {
-  color: #0984e3;
+  background: #0984e3;
+  color: white;
   border-color: #0984e3;
   cursor: default;
   animation: found 0.4s;
 }
 
 .cell.found.spangram {
-  color: #e84393;
+  background: #e84393;
+  color: white;
   border-color: #e84393;
   animation: spangram 0.6s;
 }
