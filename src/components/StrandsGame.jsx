@@ -137,9 +137,14 @@ function StrandsGame({ puzzle }) {
   const getCellCenter = (index) => {
     const row = Math.floor(index / cols);
     const col = index % cols;
-    // Each cell is 1fr, so we calculate percentage positions
-    const x = (col + 0.5) / cols * 100; // Center of cell in percentage
-    const y = (row + 0.5) / rows * 100; // Center of cell in percentage
+    // Account for cell size (44px) and gap (16px)
+    const cellSize = 44;
+    const gapSize = 16;
+    const totalWidth = cols * cellSize + (cols - 1) * gapSize;
+    const totalHeight = rows * cellSize + (rows - 1) * gapSize;
+    // Calculate center position including gaps
+    const x = (col * (cellSize + gapSize) + cellSize / 2) / totalWidth * 100;
+    const y = (row * (cellSize + gapSize) + cellSize / 2) / totalHeight * 100;
     return { x, y };
   };
 
