@@ -119,6 +119,20 @@ function StrandsGame({ puzzle }) {
           <div className="theme-title">Today's theme</div>
           <div className="theme-value">{theme}</div>
         </div>
+
+        <div className="found-words">
+          <h3>{foundWords.length} of {words.length + 1} theme words found.</h3>
+          <div className="words-list">
+            {foundWords.map((word, index) => (
+              <span 
+                key={index} 
+                className={`found-word ${word.toUpperCase() === spangram.toUpperCase() ? 'spangram-word' : ''}`}
+              >
+                {word}
+              </span>
+            ))}
+          </div>
+        </div>
         
         <div className="current-word">
           {currentWord && (
@@ -138,20 +152,6 @@ function StrandsGame({ puzzle }) {
               🎉 Congratulations! You found all words!
             </div>
           )}
-        </div>
-
-        <div className="found-words">
-          <h3>{foundWords.length} of {words.length + 1} theme words found.</h3>
-          <div className="words-list">
-            {foundWords.map((word, index) => (
-              <span 
-                key={index} 
-                className={`found-word ${word.toUpperCase() === spangram.toUpperCase() ? 'spangram-word' : ''}`}
-              >
-                {word}
-              </span>
-            ))}
-          </div>
         </div>
 
         {isGameWon && (
