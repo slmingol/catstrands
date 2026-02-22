@@ -1,5 +1,5 @@
-# Multi-stage build for CatStrands
-# Stage 1: Build the application
+# Multi-stage build for CatStrands with backend API
+# Stage 1: Build the frontend application
 FROM node:20-alpine AS builder
 
 WORKDIR /app
@@ -13,20 +13,46 @@ RUN npm ci
 # Copy source code
 COPY . .
 
-# Build the application
+# Build the frontend application
 RUN npm run build
 
-# Stage 2: Serve with nginx
-FROM nginx:alpine
+# Stage 2: Production image with both frontend and backend
+FROM node:20-alpine
 
-# Copy built assets from builder stage
+# Install nginx
+RUN apk add --no-cache nginx
+
+# Create app directory
+WORKDIR /app
+
+# Copy package files for backend
+COPY package*.json ./
+
+# Install only production dependencies
+RUN npm ci --only=production
+
+# Copy built frontend from builder stage
 COPY --from=builder /app/dist /usr/share/nginx/html
 
-# Copy custom nginx config (optional)
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+# Copy server code
+COPY server ./server
 
-# Expose port 80
-EXPOSE 80
+# Copy nginx config
+COPY nginx.conf /etc/nginx/http.d/default.conf
 
-# Start nginx
-CMD ["nginx", "-g", "daemon off;"]
+# Copy entrypoint script
+COPY docker-entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
+# Create data directory for cache backups
+RUN mkdir -p /app/data && chmod 777 /app/data
+
+# Set environment variable for cache file location
+ENV CACHE_FILE=/app/data/cache-backup.json
+ENV NODE_ENV=production
+
+# Expose ports (80 for nginx, 3001 for API)
+EXPOSE 80 3001
+
+# Start both nginx and backend server
+ENTRYPOINT ["docker-entrypoint.sh"]

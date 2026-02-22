@@ -26,6 +26,12 @@ services:
     container_name: catstrands-prod
     ports:
       - "8080:80"
+      - "3001:3001"
+    volumes:
+      - catstrands-cache:/app/data
+    environment:
+      - NODE_ENV=production
+      - CACHE_FILE=/app/data/cache-backup.json
     profiles:
       - prod
     networks:
@@ -41,3 +47,7 @@ services:
 networks:
   catstrands-network:
     driver: bridge
+
+volumes:
+  catstrands-cache:
+    driver: local

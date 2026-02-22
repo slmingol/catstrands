@@ -11,13 +11,19 @@ import {
   getCacheMetadata,
   clearCache,
   fetchNYTPuzzle,
-  cachePuzzle
+  cachePuzzle,
+  exportCache,
+  importCache
 } from './utils/fetchNYTPuzzle';
 import { 
   importPuzzle, 
   exportPuzzle, 
   downloadTemplate 
 } from './utils/puzzleImportExport';
+import { 
+  autoBackupCache, 
+  autoRestoreCache 
+} from './utils/cacheBackup';
 
 // NYT Strands launched on March 4, 2024
 const STRANDS_LAUNCH_DATE = new Date('2024-03-04');
@@ -25,9 +31,17 @@ const STRANDS_LAUNCH_DATE = new Date('2024-03-04');
 // Calculate days since Strands launch
 const getDaysSinceLaunch = () => {
   const today = new Date();
-  const diffTime = today - STRANDS_LAUNCH_DATE;
-  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-  return Math.max(1, diffDays); // At least 1 day
+  today.setHours(0, 0, 0, 0); // Start of today
+  
+  // Use Date constructor with year, month (0-indexed), day to avoid timezone issues
+  const launch = new Date(2024, 2, 4); // March 4, 2024 (month is 0-indexed)
+  launch.setHours(0, 0, 0, 0); // Start of launch day
+  
+  const diffTime = today - launch;
+  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+  
+  // Return the number of complete days (720 as of Feb 22, 2026)
+  return Math.max(1, diffDays);
 };
 
 function App() {
@@ -44,6 +58,7 @@ function App() {
   const [showStatsModal, setShowStatsModal] = useState(false);
   const [showSettingsModal, setShowSettingsModal] = useState(false);
   const fileInputRef = useRef(null);
+  const cacheFileInputRef = useRef(null);
 
   // Update available days on mount and daily
   useEffect(() => {
@@ -103,6 +118,14 @@ function App() {
       if (newPuzzles > 0) {
         console.log(`✅ Auto-fetched ${newPuzzles} new puzzle(s)`);
         updateCacheMetadata();
+        
+        // Auto-backup to server after fetching new puzzles
+        try {
+          await autoBackupCache();
+          console.log('💾 Cache backed up to server');
+        } catch (error) {
+          console.error('Failed to backup cache:', error);
+        }
       }
       
       // Mark today as checked
@@ -122,6 +145,24 @@ function App() {
     const meta = getCacheMetadata();
     setCacheMetadata(meta);
   };
+
+  // Auto-restore cache from server on mount
+  useEffect(() => {
+    const restoreCache = async () => {
+      try {
+        const result = await autoRestoreCache();
+        if (result.restored > 0) {
+          console.log(`🔄 Restored ${result.restored} cache entries from server backup`);
+          updateCacheMetadata();
+        }
+      } catch (error) {
+        console.error('Failed to auto-restore cache:', error);
+        // Non-fatal - continue with app
+      }
+    };
+    
+    restoreCache();
+  }, []);
 
   // Get puzzle based on current date from local puzzles
   const getLocalPuzzle = () => {
@@ -220,6 +261,17 @@ function App() {
     
     alert(message);
     updateCacheMetadata();
+    
+    // Auto-backup to server after downloading
+    if (results.successful > 0) {
+      try {
+        await autoBackupCache();
+        console.log('💾 Cache backed up to server');
+      } catch (error) {
+        console.error('Failed to backup cache:', error);
+      }
+    }
+    
     setCaching(false);
     setCacheProgress({ current: 0, total: 0, date: '', status: '' });
   };
@@ -245,6 +297,16 @@ function App() {
       
       alert(message);
       updateCacheMetadata();
+      
+      // Auto-backup to server after downloading
+      if (results.successful > 0) {
+        try {
+          await autoBackupCache();
+          console.log('💾 Cache backed up to server');
+        } catch (error) {
+          console.error('Failed to backup cache:', error);
+        }
+      }
     } catch (err) {
       console.error('Error caching puzzles:', err);
       alert('Error downloading puzzles. Check console for details.');
@@ -316,6 +378,57 @@ function App() {
     }
   };
 
+  // Export cache
+  const handleExportCache = () => {
+    try {
+      const filename = exportCache();
+      alert(`✅ Cache exported successfully!\nFile: ${filename}`);
+    } catch (err) {
+      console.error('Cache export error:', err);
+      alert(`❌ Export failed:\n${err.message}`);
+    }
+  };
+
+  // Import cache
+  const handleImportCache = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    try {
+      const results = await importCache(file);
+      updateCacheMetadata();
+      
+      let message = `✅ Cache imported successfully!\n\n`;
+      message += `Imported: ${results.imported} puzzles\n`;
+      if (results.skipped > 0) {
+        message += `Skipped: ${results.skipped} (already cached)\n`;
+      }
+      if (results.errors.length > 0) {
+        message += `Errors: ${results.errors.length}\n`;
+      }
+      
+      alert(message);
+      
+      // Reload current puzzle if using NYT
+      if (useNYT) {
+        const today = new Date().toISOString().split('T')[0];
+        const puzzle = await fetchPuzzleWithCache(today);
+        setCurrentPuzzle(puzzle);
+      }
+    } catch (err) {
+      console.error('Cache import error:', err);
+      alert(`❌ Import failed:\n${err.message}`);
+    }
+
+    // Reset file input
+    event.target.value = '';
+  };
+
+  // Trigger cache file input
+  const triggerCacheFileInput = () => {
+    cacheFileInputRef.current?.click();
+  };
+
   // Format today's date
   const getTodaysDate = () => {
     const today = new Date();
@@ -354,17 +467,28 @@ function App() {
         handleExportPuzzle={handleExportPuzzle}
         currentPuzzle={currentPuzzle}
         handleDownloadTemplate={handleDownloadTemplate}
+        handleExportCache={handleExportCache}
+        triggerCacheFileInput={triggerCacheFileInput}
       />
 
       <header className="app-header">
         <h1>🐱 CatStrands</h1>
         
-        {/* Hidden file input */}
+        {/* Hidden file input for puzzle import */}
         <input 
           ref={fileInputRef}
           type="file" 
           accept=".json" 
           onChange={handleImportPuzzle}
+          style={{ display: 'none' }}
+        />
+        
+        {/* Hidden file input for cache import */}
+        <input 
+          ref={cacheFileInputRef}
+          type="file" 
+          accept=".json" 
+          onChange={handleImportCache}
           style={{ display: 'none' }}
         />
       </header>
@@ -408,10 +532,11 @@ function App() {
         }}>
           {/* Left: Cached info */}
           <div style={{ 
-            flex: '1',
+            flex: '1 1 50%',
             padding: '10px 2.5vw',
             background: '#e8f5e9',
-            color: '#2e7d32'
+            color: '#2e7d32',
+            minWidth: 0
           }}>
             {useNYT && cacheMetadata?.puzzleCount > 0 && (
               <>
@@ -425,16 +550,19 @@ function App() {
           
           {/* Right: Downloading info */}
           <div style={{ 
-            flex: '1',
+            flex: '1 1 50%',
             padding: '10px 2.5vw',
             background: '#e3f2fd',
             color: '#1976d2',
-            textAlign: 'right'
+            textAlign: 'right',
+            minWidth: 0
           }}>
-            {caching && (
+            {caching ? (
               <>
                 ⬇️ Downloading {cacheProgress.current}/{cacheProgress.total}: {cacheProgress.date}
               </>
+            ) : (
+              <>&nbsp;</>
             )}
           </div>
         </div>

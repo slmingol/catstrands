@@ -255,3 +255,104 @@ export async function fetchPuzzleWithCache(date, useCache = true) {
   cachePuzzle(date, puzzle);
   return puzzle;
 }
+
+/**
+ * Export entire cache to a JSON file
+ * @returns {string} Filename of the exported cache
+ */
+export function exportCache() {
+  const cacheData = {};
+  
+  // Export all localStorage items that start with 'nyt-strands-'
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    if (key && key.startsWith('nyt-strands-')) {
+      cacheData[key] = localStorage.getItem(key);
+    }
+  }
+  
+  const metadata = getCacheMetadata();
+  const exportData = {
+    version: '1.0',
+    exportDate: new Date().toISOString(),
+    puzzleCount: metadata.puzzleCount,
+    cache: cacheData
+  };
+  
+  // Create blob and download
+  const jsonString = JSON.stringify(exportData, null, 2);
+  const blob = new Blob([jsonString], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  const filename = `catstrands_cache_${new Date().toISOString().split('T')[0]}.json`;
+  
+  link.href = url;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+  
+  return filename;
+}
+
+/**
+ * Import cache from a JSON file
+ * @param {File} file - The cache file to import
+ * @returns {Promise<Object>} Import results { imported, skipped, errors }
+ */
+export async function importCache(file) {
+  return new Promise((resolve, reject) => {
+    if (!file.name.endsWith('.json')) {
+      reject(new Error('File must be a JSON file'));
+      return;
+    }
+    
+    const reader = new FileReader();
+    
+    reader.onload = (e) => {
+      try {
+        const data = JSON.parse(e.target.result);
+        
+        // Validate structure
+        if (!data.cache || typeof data.cache !== 'object') {
+          throw new Error('Invalid cache file format');
+        }
+        
+        const results = {
+          imported: 0,
+          skipped: 0,
+          errors: []
+        };
+        
+        // Import all cache entries
+        Object.entries(data.cache).forEach(([key, value]) => {
+          try {
+            // Only import nyt-strands keys
+            if (key.startsWith('nyt-strands-')) {
+              // Check if already exists
+              if (localStorage.getItem(key)) {
+                results.skipped++;
+              } else {
+                localStorage.setItem(key, value);
+                results.imported++;
+              }
+            }
+          } catch (error) {
+            results.errors.push({ key, error: error.message });
+          }
+        });
+        
+        resolve(results);
+      } catch (error) {
+        reject(new Error(`Failed to parse cache file: ${error.message}`));
+      }
+    };
+    
+    reader.onerror = () => {
+      reject(new Error('Failed to read file'));
+    };
+    
+    reader.readAsText(file);
+  });
+}

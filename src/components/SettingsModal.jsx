@@ -14,7 +14,9 @@ function SettingsModal({
   triggerFileInput,
   handleExportPuzzle,
   currentPuzzle,
-  handleDownloadTemplate
+  handleDownloadTemplate,
+  handleExportCache,
+  triggerCacheFileInput
 }) {
   if (!isOpen) return null;
 
@@ -53,14 +55,32 @@ function SettingsModal({
               </button>
               
               {cacheMetadata.puzzleCount > 0 && (
-                <button 
-                  onClick={() => { handleClearCache(); onClose(); }}
-                  className="settings-button danger"
-                >
-                  🗑️ Clear Cache ({cacheMetadata.puzzleCount} puzzles)
-                  <span className="button-hint">Remove all cached puzzles</span>
-                </button>
+                <>
+                  <button 
+                    onClick={() => { handleExportCache(); onClose(); }}
+                    className="settings-button info"
+                  >
+                    📤 Export Cache ({cacheMetadata.puzzleCount} puzzles)
+                    <span className="button-hint">Save cache to transfer to another instance</span>
+                  </button>
+                  
+                  <button 
+                    onClick={() => { handleClearCache(); onClose(); }}
+                    className="settings-button danger"
+                  >
+                    🗑️ Clear Cache
+                    <span className="button-hint">Remove all cached puzzles</span>
+                  </button>
+                </>
               )}
+              
+              <button 
+                onClick={() => { triggerCacheFileInput(); onClose(); }}
+                className="settings-button info"
+              >
+                📥 Import Cache
+                <span className="button-hint">Load cache from exported file</span>
+              </button>
             </div>
           )}
 
