@@ -108,17 +108,18 @@
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
   color: #2d3748;
   text-transform: uppercase;
+  border: 3px solid transparent;
 }
 
 .cell:hover {
-  transform: scale(1.05);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  filter: brightness(1.05);
 }
 
 .cell.selected {
   background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
-  transform: scale(1.1);
   box-shadow: 0 6px 16px rgba(253, 203, 110, 0.5);
+  border: 3px solid #f39c12;
   animation: pulse 0.3s;
 }
 
@@ -136,40 +137,44 @@
 
 @keyframes pulse {
   0%, 100% {
-    transform: scale(1.1);
+    box-shadow: 0 6px 16px rgba(253, 203, 110, 0.5);
   }
   50% {
-    transform: scale(1.15);
+    box-shadow: 0 8px 20px rgba(253, 203, 110, 0.7);
   }
 }
 
 @keyframes found {
   0% {
-    transform: scale(1);
+    opacity: 1;
   }
   50% {
-    transform: scale(1.2) rotate(5deg);
+    opacity: 0.8;
+    box-shadow: 0 6px 20px rgba(9, 132, 227, 0.6);
   }
   100% {
-    transform: scale(1);
+    opacity: 1;
   }
 }
 
 @keyframes spangram {
   0% {
-    transform: scale(1);
+    opacity: 1;
   }
   25% {
-    transform: scale(1.2) rotate(-5deg);
+    opacity: 0.8;
+    box-shadow: 0 8px 24px rgba(232, 67, 147, 0.7);
   }
   50% {
-    transform: scale(1.1) rotate(5deg);
+    opacity: 0.9;
+    box-shadow: 0 6px 20px rgba(232, 67, 147, 0.6);
   }
   75% {
-    transform: scale(1.2) rotate(-5deg);
+    opacity: 0.8;
+    box-shadow: 0 8px 24px rgba(232, 67, 147, 0.7);
   }
   100% {
-    transform: scale(1);
+    opacity: 1;
   }
 }
 
