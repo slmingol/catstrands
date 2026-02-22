@@ -209,12 +209,6 @@ function StrandsGame({ puzzle }) {
           )}
         </div>
         
-        <div className="current-word">
-          {currentWord && (
-            <span className="word-display">{currentWord}</span>
-          )}
-        </div>
-        
         <div className="message-container">
           {message && !isGameWon && (
             <div className={`message ${message.includes('✓') || message.includes('🌟') ? 'success' : 'info'}`}>
@@ -237,6 +231,12 @@ function StrandsGame({ puzzle }) {
       </div>
 
       <div className="right-panel">
+        <div className="current-word">
+          {currentWord && (
+            <span className="word-display">{currentWord}</span>
+          )}
+        </div>
+        
         <div className="grid-container">
         <svg className="connection-lines" viewBox="0 0 100 100" preserveAspectRatio="none">
           {/* Lines for found words */}

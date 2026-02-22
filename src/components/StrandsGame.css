@@ -107,18 +107,18 @@
 }
 
 .current-word {
-  text-align: left;
-  min-height: 40px;
+  text-align: center;
+  min-height: 50px;
   display: flex;
   align-items: center;
-  justify-content: flex-start;
-  margin-bottom: 10px;
+  justify-content: center;
+  margin-bottom: 15px;
 }
 
 .word-display {
-  font-size: 1.8rem;
+  font-size: 2rem;
   font-weight: bold;
-  letter-spacing: 4px;
+  letter-spacing: 6px;
   color: #667eea;
   text-transform: uppercase;
 }
