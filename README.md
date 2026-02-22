@@ -21,11 +21,15 @@ Strands is a word search game where you find themed words by connecting adjacent
 📱 **Responsive Design**: Works on desktop and mobile devices
 🎨 **Beautiful UI**: Smooth animations with bubbling effects and gradient backgrounds
 🏆 **Progress Tracking**: See which words you've found
+� **Stats Modal**: Track your game history, wins, and hints used
 📰 **NYT Integration**: Auto-fetch daily puzzles from NYT Strands archive
-📚 **Archive Browser**: Browse and download 721+ puzzles since March 4, 2024
+📚 **Archive Browser**: Browse and download 720+ puzzles since March 4, 2024
 📁 **Import/Export**: Create, share, and play custom puzzles
-💡 **Smart Hints**: Dashed circle hints using pathfinding
-🔄 **Auto-Update**: Automatically downloads new puzzles daily
+💾 **Cache Export/Import**: Transfer your puzzle cache between browsers or devices
+🔄 **Auto-Backup**: Automatically backs up cache to server after downloading puzzles
+💡 **Smart Hints**: Earn hints by finding non-solution words, dashed circles show letter positions
+⚙️ **Settings Modal**: Clean UI with gear icon for all configuration options
+🌐 **Persistent Storage**: Server-side cache backup survives browser cache clears
 
 ### Import/Export Custom Puzzles
 
@@ -254,13 +258,45 @@ Edit `src/data/puzzles.js` to add puzzles directly to the app:
 }
 \`\`\`
 
+## Architecture
+
+This application uses a **multi-service architecture** within a single Docker container:
+
+### Frontend
+- **React 19** + **Vite** for the UI
+- Served via **Nginx** on port 80
+- Pure CSS3 animations with no UI frameworks
+
+### Backend
+- **Express.js** API server on port 3001
+- **Filesystem cache persistence** at `/app/data/cache-backup.json`
+- **Auto-backup**: Automatically saves cache after puzzle downloads
+- **Auto-restore**: Restores cache on app load if browser localStorage is empty
+- **Shared cache**: Single cache file for all users (household/family design)
+
+### API Endpoints
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/api/health` | GET | Health check |
+| `/api/cache/backup` | POST | Save cache to filesystem |
+| `/api/cache/restore` | GET | Restore cache from filesystem |
+| `/api/cache/info` | GET | Get backup metadata |
+
+### Docker Configuration
+- **Ports**: 80 (frontend), 3001 (backend)
+- **Volume**: `catstrands-cache:/app/data` for persistent storage
+- **Process Management**: `docker-entrypoint.sh` starts both nginx and Node.js server
+
 ## Technologies Used
 
 - **React 19**: UI library
 - **Vite**: Build tool and dev server
+- **Express.js**: Backend API server
+- **Node.js 20**: Server runtime environment
 - **CSS3**: Styling with animations and gradients
 - **Docker**: Containerization with multi-stage builds
-- **Nginx**: Production web server
+- **Nginx**: Production web server and reverse proxy
 
 ## Development
 
