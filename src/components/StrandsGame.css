@@ -252,7 +252,7 @@
 }
 
 .found-words {
-  margin-top: 20px;
+  margin-top: -16px;
   text-align: center;
 }
 
@@ -294,21 +294,22 @@
 }
 
 .hint-button {
-  background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
-  color: #2d3748;
-  border: none;
+  background: white;
+  color: #999;
+  border: 2px solid #e2e8f0;
   padding: 12px 24px;
   border-radius: 8px;
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
-  box-shadow: 0 4px 12px rgba(253, 203, 110, 0.3);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .hint-button:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(253, 203, 110, 0.4);
+  background: #f7fafc;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 .hint-button:active:not(:disabled) {
