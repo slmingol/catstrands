@@ -1,5 +1,8 @@
 # CatStrands 🐱
 
+[![Build and Push Docker Image](https://github.com/slmingol/catstrands/actions/workflows/docker-build.yml/badge.svg)](https://github.com/slmingol/catstrands/actions/workflows/docker-build.yml)
+[![Docker Image](https://img.shields.io/badge/docker-ghcr.io-blue?logo=docker)](https://github.com/slmingol/catstrands/pkgs/container/catstrands)
+
 A clone of the New York Times Strands word puzzle game built with React and Vite.
 
 ## About the Game
@@ -123,7 +126,47 @@ make down-prod    # Stop production
 # Utility commands
 make logs        # View logs
 make clean       # Remove all containers and images
+
+# CI/CD commands
+make ci          # Build and push to GHCR (requires Docker login)
 ```
+
+### Pulling from GitHub Container Registry
+
+Pre-built images are automatically published to GHCR via GitHub Actions:
+
+```bash
+# Pull the latest image
+docker pull ghcr.io/slmingol/catstrands:latest
+
+# Run the pre-built image
+docker run -d -p 3000:80 ghcr.io/slmingol/catstrands:latest
+```
+
+Available tags:
+- `latest` - Latest build from main branch
+- `main` - Latest main branch build
+- `<commit-sha>` - Specific commit builds
+- `v*` - Version tags (when released)
+
+### Building and Pushing to GHCR (Manual)
+
+To manually build and push to GHCR:
+
+```bash
+# Login to GitHub Container Registry
+echo $GITHUB_TOKEN | docker login ghcr.io -u USERNAME --password-stdin
+
+# Build and push multi-arch image
+make ci
+
+# Or use docker directly
+docker buildx build --platform linux/amd64,linux/arm64 \
+  -t ghcr.io/slmingol/catstrands:latest \
+  --push .
+```
+
+**Note**: GitHub Actions automatically builds and pushes on every commit to main.
 
 ## Project Structure
 
