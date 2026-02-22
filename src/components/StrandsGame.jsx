@@ -132,9 +132,20 @@ function StrandsGame({ puzzle }) {
     setMessage(`💡 Hint: Look for "${hintWord.toUpperCase()}"`);
   };
 
+  // Format today's date
+  const getTodaysDate = () => {
+    const today = new Date();
+    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    return today.toLocaleDateString('en-US', options);
+  };
+
   return (
     <div className="strands-game">
       <div className="left-panel">
+        <div className="date-display">
+          {getTodaysDate()}
+        </div>
+        
         <div className="theme-section">
           <div className="theme-title">Today's theme</div>
           <div className="theme-value">{theme}</div>

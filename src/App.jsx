@@ -1,19 +1,18 @@
-import { useState } from 'react';
 import './App.css';
 import StrandsGame from './components/StrandsGame';
 import puzzles from './data/puzzles';
 
 function App() {
-  const [currentPuzzleIndex, setCurrentPuzzleIndex] = useState(0);
-  const currentPuzzle = puzzles[currentPuzzleIndex];
-
-  const handleNextPuzzle = () => {
-    setCurrentPuzzleIndex((prev) => (prev + 1) % puzzles.length);
+  // Get puzzle based on current date
+  const getPuzzleOfTheDay = () => {
+    const today = new Date();
+    // Use days since epoch to get a consistent puzzle for each day
+    const daysSinceEpoch = Math.floor(today.getTime() / (1000 * 60 * 60 * 24));
+    const puzzleIndex = daysSinceEpoch % puzzles.length;
+    return puzzles[puzzleIndex];
   };
 
-  const handlePrevPuzzle = () => {
-    setCurrentPuzzleIndex((prev) => (prev - 1 + puzzles.length) % puzzles.length);
-  };
+  const currentPuzzle = getPuzzleOfTheDay();
 
   return (
     <div className="app">
@@ -21,15 +20,8 @@ function App() {
         <h1>🐱 CatStrands</h1>
         <p className="subtitle">Find themed words by connecting adjacent letters</p>
       </header>
-      
-      <div className="puzzle-navigation">
-        <button onClick={handlePrevPuzzle} className="nav-button">← Previous</button>
-        <span className="puzzle-counter">Puzzle {currentPuzzleIndex + 1} of {puzzles.length}</span>
-        <button onClick={handleNextPuzzle} className="nav-button">Next →</button>
-      </div>
 
       <StrandsGame 
-        key={currentPuzzleIndex}
         puzzle={currentPuzzle} 
       />
     </div>
