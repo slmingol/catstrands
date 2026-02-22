@@ -161,20 +161,21 @@ function StrandsGame({ puzzle }) {
     <div className="strands-game">
       <StatsModal isOpen={showStatsModal} onClose={() => setShowStatsModal(false)} />
       
-      <div className="left-panel">
-        <div className="top-buttons">
-          <button 
-            className="stats-button"
-            onClick={() => setShowStatsModal(true)}
-            title="View Statistics"
-          >
-            📊
-          </button>
-        </div>
-
+      <div className="date-stats-row">
         <div className="date-display">
           {getTodaysDate()}
         </div>
+        <button 
+          className="stats-button"
+          onClick={() => setShowStatsModal(true)}
+          title="View Statistics"
+        >
+          📊
+        </button>
+      </div>
+      
+      <div className="game-content">
+      <div className="left-panel">
         
         <div className="theme-section">
           <div className="theme-title">Today's theme</div>
@@ -320,6 +321,7 @@ function StrandsGame({ puzzle }) {
             </div>
           ))}
         </div>
+      </div>
       </div>
       </div>
     </div>

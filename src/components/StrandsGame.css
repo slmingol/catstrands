@@ -4,22 +4,25 @@
   padding: 30px;
   box-shadow: 0 10px 40px rgba(0,0,0,0.2);
   display: flex;
-  gap: 40px;
+  flex-direction: column;
+  gap: 20px;
   max-width: 1000px;
   margin: 0 auto;
 }
 
-.left-panel {
-  flex: 0 0 300px;
+.date-stats-row {
   display: flex;
-  flex-direction: column;
-  gap: 20px;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 10px;
 }
 
-.top-buttons {
-  display: flex;
-  justify-content: flex-end;
-  gap: 8px;
+.date-display {
+  text-align: left;
+  font-size: 1.3125rem;
+  color: #666;
+  font-weight: 500;
 }
 
 .stats-button {
@@ -36,6 +39,7 @@
   justify-content: center;
   min-width: 44px;
   height: 44px;
+  flex-shrink: 0;
 }
 
 .stats-button:hover {
@@ -48,6 +52,18 @@
   transform: translateY(0);
 }
 
+.game-content {
+  display: flex;
+  gap: 40px;
+}
+
+.left-panel {
+  flex: 0 0 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
 .right-panel {
   flex: 1;
   display: flex;
@@ -57,14 +73,6 @@
 
 .game-info {
   margin-bottom: 20px;
-}
-
-.date-display {
-  text-align: center;
-  font-size: 1.3125rem;
-  color: #666;
-  margin-bottom: 20px;
-  font-weight: 500;
 }
 
 .theme-section {
