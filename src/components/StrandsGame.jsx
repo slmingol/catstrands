@@ -195,7 +195,7 @@ function StrandsGame({ puzzle }) {
         
         <div className="theme-section">
           <div className="theme-title">Today's theme</div>
-          <div className="theme-value">{theme}</div>
+          <div className="theme-value" style={{ paddingTop: '10px', paddingBottom: '10px' }}>{theme}</div>
         </div>
 
         <div className="found-words">
