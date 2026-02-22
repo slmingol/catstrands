@@ -253,7 +253,7 @@
 
 .found-words {
   margin-top: 20px;
-  text-align: left;
+  text-align: center;
 }
 
 .found-words h3 {
@@ -266,7 +266,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
-  justify-content: flex-start;
+  justify-content: center;
 }
 
 .found-word {
