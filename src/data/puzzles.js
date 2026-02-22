@@ -283,18 +283,18 @@ const puzzles = [
     rows: 8,
     cols: 6,
     theme: "Office Supplies",
-    spangram: "DESKTOP",
+    spangram: "PAPERS",
     grid: [
-      'D', 'E', 'S', 'K', 'T', 'O',
-      'P', 'E', 'N', 'P', 'A', 'P',
-      'E', 'R', 'S', 'T', 'A', 'P',
-      'L', 'E', 'R', 'C', 'L', 'I',
-      'P', 'S', 'T', 'A', 'P', 'E',
-      'G', 'L', 'U', 'E', 'R', 'U',
-      'L', 'E', 'R', 'F', 'O', 'L',
-      'D', 'E', 'R', 'B', 'I', 'N'
+      'P', 'A', 'P', 'E', 'R', 'S',
+      'E', 'N', 'I', 'N', 'K', 'T',
+      'R', 'U', 'L', 'E', 'R', 'A',
+      'G', 'L', 'U', 'E', 'C', 'P',
+      'C', 'L', 'I', 'P', 'S', 'E',
+      'F', 'I', 'L', 'E', 'N', 'O',
+      'T', 'A', 'B', 'O', 'X', 'T',
+      'D', 'E', 'S', 'K', 'S', 'T'
     ],
-    words: ['PEN', 'PAPER', 'STAPLER', 'CLIPS', 'TAPE', 'GLUE', 'RULER', 'FOLDER', 'BINDER']
+    words: ['PEN', 'INK', 'RULER', 'GLUE', 'CLIPS', 'FILE', 'NOTE', 'TAB', 'BOX', 'DESK', 'TAPE']
   },
   {
     rows: 8,
