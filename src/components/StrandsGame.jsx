@@ -216,6 +216,12 @@ function StrandsGame({ puzzle }) {
         </button>
       </div>
       
+      {isGameWon && (
+        <div className="victory-banner">
+          🎉 Perfect! You found all words including the spangram!
+        </div>
+      )}
+      
       <div className="game-content">
       <div className="left-panel">
         
@@ -273,11 +279,6 @@ function StrandsGame({ puzzle }) {
           )}
         </div>
 
-        {isGameWon && (
-          <div className="victory-banner">
-            🎉 Perfect! You found all words including the spangram!
-          </div>
-        )}
       </div>
 
       <div className="right-panel">
