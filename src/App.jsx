@@ -398,13 +398,20 @@ function App() {
       const results = await importCache(file);
       updateCacheMetadata();
       
+      const totalPuzzles = results.puzzlesAdded + results.puzzlesUpdated;
       let message = `✅ Cache imported successfully!\n\n`;
-      message += `Imported: ${results.imported} puzzles\n`;
-      if (results.skipped > 0) {
-        message += `Skipped: ${results.skipped} (already cached)\n`;
+      
+      if (results.puzzlesAdded > 0) {
+        message += `New puzzles: ${results.puzzlesAdded}\n`;
+      }
+      if (results.puzzlesUpdated > 0) {
+        message += `Updated puzzles: ${results.puzzlesUpdated}\n`;
+      }
+      if (totalPuzzles === 0) {
+        message += `All puzzles already up to date\n`;
       }
       if (results.errors.length > 0) {
-        message += `Errors: ${results.errors.length}\n`;
+        message += `\nErrors: ${results.errors.length}\n`;
       }
       
       alert(message);

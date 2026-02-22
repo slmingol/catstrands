@@ -277,13 +277,24 @@ export function exportCache() {
   }
   
   const cacheKeys = Object.keys(cacheData);
-  console.log(`📊 Exporting ${cacheKeys.length} cache entries`);
+  console.log(`📊 Exporting ${cacheKeys.length} localStorage keys`);
   
-  const metadata = getCacheMetadata();
+  // Count actual puzzles in the main cache
+  let actualPuzzleCount = 0;
+  if (cacheData[CACHE_KEY]) {
+    try {
+      const puzzleCache = JSON.parse(cacheData[CACHE_KEY]);
+      actualPuzzleCount = Object.keys(puzzleCache).length;
+      console.log(`📦 Contains ${actualPuzzleCount} puzzles`);
+    } catch (e) {
+      console.error('Error parsing cache:', e);
+    }
+  }
+  
   const exportData = {
     version: '1.0',
     exportDate: new Date().toISOString(),
-    puzzleCount: cacheKeys.length,
+    puzzleCount: actualPuzzleCount,
     cache: cacheData
   };
   
@@ -291,7 +302,7 @@ export function exportCache() {
     version: exportData.version,
     exportDate: exportData.exportDate,
     puzzleCount: exportData.puzzleCount,
-    cacheKeys: cacheKeys.slice(0, 5)  // Show first 5 keys
+    cacheKeys: cacheKeys
   });
   
   // Create blob and download
@@ -340,7 +351,9 @@ export async function importCache(file) {
         const results = {
           imported: 0,
           skipped: 0,
-          errors: []
+          errors: [],
+          puzzlesAdded: 0,
+          puzzlesUpdated: 0
         };
         
         // Import all cache entries
@@ -350,8 +363,36 @@ export async function importCache(file) {
             if (key.startsWith('nyt-strands-')) {
               // Check if already exists - compare the existing value
               const existing = localStorage.getItem(key);
-              if (existing) {
-                // If values are different, import the new one
+              
+              // Special handling for the main cache key (contains all puzzles)
+              if (key === CACHE_KEY) {
+                const existingCache = existing ? JSON.parse(existing) : {};
+                const importCache = JSON.parse(value);
+                
+                // Count puzzles being added vs updated
+                Object.keys(importCache).forEach(date => {
+                  if (existingCache[date]) {
+                    results.puzzlesUpdated++;
+                  } else {
+                    results.puzzlesAdded++;
+                  }
+                });
+                
+                // Merge caches
+                const mergedCache = { ...existingCache, ...importCache };
+                localStorage.setItem(key, JSON.stringify(mergedCache));
+                console.log(`✅ Merged cache: ${results.puzzlesAdded} new, ${results.puzzlesUpdated} updated`);
+                
+                // Update metadata to reflect merged cache
+                const meta = {
+                  lastUpdated: new Date().toISOString(),
+                  puzzleCount: Object.keys(mergedCache).length
+                };
+                localStorage.setItem(CACHE_META_KEY, JSON.stringify(meta));
+                
+                results.imported++;
+              } else if (existing) {
+                // For other keys (metadata, etc.)
                 if (existing !== value) {
                   localStorage.setItem(key, value);
                   console.log(`🔄 Updated: ${key}`);
