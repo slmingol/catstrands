@@ -53,13 +53,21 @@
   text-transform: uppercase;
 }
 
+.message-container {
+  min-height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 15px;
+}
+
 .message {
   text-align: center;
   padding: 10px;
   border-radius: 8px;
   font-weight: 600;
-  margin-bottom: 15px;
   animation: fadeIn 0.3s;
+  width: 100%;
 }
 
 .message.success {

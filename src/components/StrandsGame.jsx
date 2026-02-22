@@ -114,17 +114,19 @@ function StrandsGame({ puzzle }) {
           )}
         </div>
         
-        {message && !isGameWon && (
-          <div className={`message ${message.includes('✓') || message.includes('🌟') ? 'success' : 'info'}`}>
-            {message}
-          </div>
-        )}
-        
-        {isGameWon && (
-          <div className="message success">
-            🎉 Congratulations! You found all words!
-          </div>
-        )}
+        <div className="message-container">
+          {message && !isGameWon && (
+            <div className={`message ${message.includes('✓') || message.includes('🌟') ? 'success' : 'info'}`}>
+              {message}
+            </div>
+          )}
+          
+          {isGameWon && (
+            <div className="message success">
+              🎉 Congratulations! You found all words!
+            </div>
+          )}
+        </div>
       </div>
 
       <div 
