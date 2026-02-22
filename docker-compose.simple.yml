@@ -1,8 +1,6 @@
 services:
   catstrands:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: ghcr.io/slmingol/catstrands:latest
     container_name: catstrands
     ports:
       - "3000:80"

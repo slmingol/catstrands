@@ -51,10 +51,10 @@ npm run build
 
 #### Simple Setup (Quick Start)
 
-The simplest way to run CatStrands with Docker:
+The simplest way to run CatStrands - pulls pre-built image from GHCR (no build required):
 
 ```bash
-# Build and start the container
+# Pull and start the container
 docker-compose -f docker-compose.simple.yml up -d
 
 # App will be available at http://localhost:3000

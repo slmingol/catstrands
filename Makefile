@@ -6,7 +6,7 @@ help:
 	@echo "=========================="
 	@echo ""
 	@echo "Simple Setup:"
-	@echo "  make simple        - Start app with simple compose (port 3000)"
+	@echo "  make simple        - Pull and run from GHCR (port 3000)"
 	@echo "  make down-simple   - Stop simple setup"
 	@echo ""
 	@echo "Development:"
@@ -29,8 +29,10 @@ help:
 
 # Simple setup commands
 simple:
+	@echo "Pulling latest image from GHCR..."
+	docker-compose -f docker-compose.simple.yml pull
 	docker-compose -f docker-compose.simple.yml up -d
-	@echo "CatStrands is running at http://localhost:3000"
+	@echo "CatStrands is running at http://localhost:3000 (pulled from ghcr.io/slmingol/catstrands)"
 
 down-simple:
 	docker-compose -f docker-compose.simple.yml down
