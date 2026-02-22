@@ -316,8 +316,11 @@ export async function importCache(file) {
         
         // Validate structure
         if (!data.cache || typeof data.cache !== 'object') {
-          throw new Error('Invalid cache file format');
+          throw new Error('Invalid cache file format - missing cache object');
         }
+        
+        const cacheEntries = Object.entries(data.cache);
+        console.log(`📦 Import file contains ${cacheEntries.length} total entries`);
         
         const results = {
           imported: 0,
@@ -326,25 +329,39 @@ export async function importCache(file) {
         };
         
         // Import all cache entries
-        Object.entries(data.cache).forEach(([key, value]) => {
+        cacheEntries.forEach(([key, value]) => {
           try {
             // Only import nyt-strands keys
             if (key.startsWith('nyt-strands-')) {
-              // Check if already exists
-              if (localStorage.getItem(key)) {
-                results.skipped++;
+              // Check if already exists - compare the existing value
+              const existing = localStorage.getItem(key);
+              if (existing) {
+                // If values are different, import the new one
+                if (existing !== value) {
+                  localStorage.setItem(key, value);
+                  console.log(`🔄 Updated: ${key}`);
+                  results.imported++;
+                } else {
+                  results.skipped++;
+                }
               } else {
                 localStorage.setItem(key, value);
+                console.log(`✅ Imported: ${key}`);
                 results.imported++;
               }
+            } else {
+              console.log(`⏭️  Skipping non-cache key: ${key}`);
             }
           } catch (error) {
+            console.error(`❌ Error importing ${key}:`, error);
             results.errors.push({ key, error: error.message });
           }
         });
         
+        console.log(`📊 Import results:`, results);
         resolve(results);
       } catch (error) {
+        console.error('❌ Parse error:', error);
         reject(new Error(`Failed to parse cache file: ${error.message}`));
       }
     };
