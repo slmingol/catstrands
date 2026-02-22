@@ -175,8 +175,7 @@
   align-items: center;
   justify-content: center;
   background: transparent;
-  font-size: 1.62rem;
-  font-weight: bold;
+  font: 500 26px / 70% nyt-franklin, Arial;
   cursor: pointer;
   transition: all 0.15s;
   color: #2d3748;
