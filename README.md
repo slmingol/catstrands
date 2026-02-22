@@ -1,4 +1,4 @@
-# Strands Clone
+# CatStrands 🐱
 
 A clone of the New York Times Strands word puzzle game built with React and Vite.
 
