@@ -349,13 +349,14 @@
   background: white;
   color: #999;
   border: 2px solid #e2e8f0;
-  padding: 12px 24px;
+  padding: 12px 60px;
   border-radius: 24px;
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  min-width: 192px;
 }
 
 .hint-button:hover:not(:disabled) {
