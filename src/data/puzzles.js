@@ -287,14 +287,14 @@ const puzzles = [
     grid: [
       'P', 'A', 'P', 'E', 'R', 'S',
       'T', 'A', 'P', 'E', 'I', 'N',
-      'K', 'G', 'L', 'U', 'E', 'C',
-      'L', 'I', 'P', 'F', 'I', 'L',
-      'E', 'T', 'A', 'C', 'K', 'S',
-      'T', 'A', 'P', 'L', 'E', 'R',
-      'U', 'L', 'E', 'R', 'P', 'E',
-      'N', 'D', 'E', 'S', 'K', 'S'
+      'G', 'L', 'U', 'E', 'N', 'K',
+      'F', 'I', 'L', 'E', 'D', 'X',
+      'T', 'A', 'C', 'K', 'E', 'Y',
+      'C', 'L', 'I', 'P', 'S', 'Z',
+      'D', 'E', 'S', 'K', 'K', 'W',
+      'P', 'E', 'N', 'C', 'I', 'L'
     ],
-    words: ['TAPE', 'INK', 'GLUE', 'CLIP', 'FILE', 'TACK', 'STAPLE', 'RULER', 'PEN', 'DESK']
+    words: ['TAPE', 'GLUE', 'FILE', 'TACK', 'CLIP', 'DESK', 'INK', 'PENCIL']
   },
   {
     rows: 8,
