@@ -3,6 +3,24 @@
   border-radius: 16px;
   padding: 30px;
   box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+  display: flex;
+  gap: 40px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.left-panel {
+  flex: 0 0 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.right-panel {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .game-info {
@@ -10,7 +28,7 @@
 }
 
 .theme-section {
-  text-align: center;
+  text-align: left;
   margin-bottom: 15px;
 }
 
@@ -37,11 +55,11 @@
 }
 
 .current-word {
-  text-align: center;
+  text-align: left;
   min-height: 40px;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   margin-bottom: 10px;
 }
 
@@ -57,7 +75,7 @@
   min-height: 60px;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   margin-bottom: 15px;
 }
 
@@ -95,7 +113,6 @@
 
 .grid-container {
   position: relative;
-  margin: 20px auto;
   width: fit-content;
 }
 
@@ -232,8 +249,8 @@
 }
 
 .found-words {
-  margin-top: 30px;
-  text-align: center;
+  margin-top: 20px;
+  text-align: left;
 }
 
 .found-words h3 {
@@ -246,7 +263,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
-  justify-content: center;
+  justify-content: flex-start;
 }
 
 .found-word {

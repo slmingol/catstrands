@@ -115,7 +115,7 @@ function StrandsGame({ puzzle }) {
 
   return (
     <div className="strands-game">
-      <div className="game-info">
+      <div className="left-panel">
         <div className="theme-section">
           <button 
             className="theme-button"
@@ -144,9 +144,30 @@ function StrandsGame({ puzzle }) {
             </div>
           )}
         </div>
+
+        <div className="found-words">
+          <h3>Found Words ({foundWords.length}/{words.length + 1})</h3>
+          <div className="words-list">
+            {foundWords.map((word, index) => (
+              <span 
+                key={index} 
+                className={`found-word ${word.toUpperCase() === spangram.toUpperCase() ? 'spangram-word' : ''}`}
+              >
+                {word}
+              </span>
+            ))}
+          </div>
+        </div>
+
+        {isGameWon && (
+          <div className="victory-banner">
+            🎉 Perfect! You found all words including the spangram!
+          </div>
+        )}
       </div>
 
-      <div className="grid-container">
+      <div className="right-panel">
+        <div className="grid-container">
         <svg className="connection-lines" viewBox="0 0 100 100" preserveAspectRatio="none">
           {/* Lines for found words */}
           {foundWordPaths.map((wordPath, pathIndex) => {
@@ -231,26 +252,7 @@ function StrandsGame({ puzzle }) {
           ))}
         </div>
       </div>
-
-      <div className="found-words">
-        <h3>Found Words ({foundWords.length}/{words.length + 1})</h3>
-        <div className="words-list">
-          {foundWords.map((word, index) => (
-            <span 
-              key={index} 
-              className={`found-word ${word.toUpperCase() === spangram.toUpperCase() ? 'spangram-word' : ''}`}
-            >
-              {word}
-            </span>
-          ))}
-        </div>
       </div>
-
-      {isGameWon && (
-        <div className="victory-banner">
-          🎉 Perfect! You found all words including the spangram!
-        </div>
-      )}
     </div>
   );
 }
