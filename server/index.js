@@ -122,7 +122,10 @@ app.get('/api/cache/info', async (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`CatStrands Cache Server v${pkg.version}`);
-  console.log(`Server running on port ${PORT}`);
-  console.log(`Cache file: ${CACHE_FILE}`);
+  console.log('\n' + '='.repeat(60));
+  console.log(`🐱  CatStrands Cache Server v${pkg.version}`);
+  console.log('='.repeat(60));
+  console.log(`   Server running on port ${PORT}`);
+  console.log(`   Cache file: ${CACHE_FILE}`);
+  console.log('='.repeat(60) + '\n');
 });
