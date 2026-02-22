@@ -16,6 +16,38 @@
   gap: 20px;
 }
 
+.top-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.stats-button {
+  background: white;
+  border: 2px solid #e5e5e5;
+  color: #666;
+  cursor: pointer;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 20px;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  height: 44px;
+}
+
+.stats-button:hover {
+  background: #f8f8f8;
+  border-color: #ccc;
+  transform: translateY(-1px);
+}
+
+.stats-button:active {
+  transform: translateY(0);
+}
+
 .right-panel {
   flex: 1;
   display: flex;

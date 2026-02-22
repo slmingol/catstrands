@@ -1,5 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import './StrandsGame.css';
+import StatsModal from './StatsModal';
+import { recordGameCompletion, recordGameStart } from '../utils/statsManager';
 
 function StrandsGame({ puzzle }) {
   const { grid, words, spangram, theme, rows, cols } = puzzle;
@@ -13,9 +15,25 @@ function StrandsGame({ puzzle }) {
   const [message, setMessage] = useState('');
   const [hintsUsed, setHintsUsed] = useState(0);
   const [revealedHints, setRevealedHints] = useState([]);
+  const [showStatsModal, setShowStatsModal] = useState(false);
+  const [statsRecorded, setStatsRecorded] = useState(false);
 
   // Check if game is won
   const isGameWon = foundWords.length === words.length + 1; // +1 for spangram
+
+  // Record game start on mount
+  useEffect(() => {
+    recordGameStart();
+  }, []);
+
+  // Record stats when game is won
+  useEffect(() => {
+    if (isGameWon && !statsRecorded) {
+      const totalWords = words.length + 1; // +1 for spangram
+      recordGameCompletion(hintsUsed, foundWords.length, totalWords);
+      setStatsRecorded(true);
+    }
+  }, [isGameWon, statsRecorded, hintsUsed, foundWords.length, words.length]);
 
 
   const getRowCol = (index) => [Math.floor(index / cols), index % cols];
@@ -141,7 +159,19 @@ function StrandsGame({ puzzle }) {
 
   return (
     <div className="strands-game">
+      <StatsModal isOpen={showStatsModal} onClose={() => setShowStatsModal(false)} />
+      
       <div className="left-panel">
+        <div className="top-buttons">
+          <button 
+            className="stats-button"
+            onClick={() => setShowStatsModal(true)}
+            title="View Statistics"
+          >
+            📊
+          </button>
+        </div>
+
         <div className="date-display">
           {getTodaysDate()}
         </div>
