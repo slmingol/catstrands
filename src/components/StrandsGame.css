@@ -1,13 +1,14 @@
 .strands-game {
   background: white;
-  border-radius: 16px;
-  padding: 30px;
-  box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+  border-radius: 0;
+  padding: 20px 40px;
+  box-shadow: none;
   display: flex;
   flex-direction: column;
   gap: 20px;
-  max-width: 1000px;
+  max-width: 100%;
   margin: 0 auto;
+  flex: 1;
 }
 
 .date-stats-row {

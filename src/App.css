@@ -10,33 +10,35 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: white;
   min-height: 100vh;
 }
 
 .app {
-  max-width: 800px;
+  max-width: 100%;
   margin: 0 auto;
-  padding: 20px;
+  padding: 0;
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 .app-header {
   text-align: center;
-  color: white;
-  margin-bottom: 30px;
+  color: #333;
+  margin-bottom: 20px;
+  padding: 20px;
 }
 
 .app-header h1 {
   font-size: 3rem;
   font-weight: bold;
   margin-bottom: 10px;
-  text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
 }
 
 .subtitle {
   font-size: 1.1rem;
-  opacity: 0.9;
+  opacity: 0.7;
   margin-bottom: 10px;
 }
 
