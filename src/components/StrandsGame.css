@@ -14,7 +14,6 @@
   display: flex;
   flex-direction: column;
   gap: 20px;
-  justify-content: center;
 }
 
 .right-panel {
@@ -29,7 +28,8 @@
 }
 
 .theme-section {
-  text-align: left;
+  text-align: center;
+  margin-top: 52px;
   margin-bottom: 20px;
 }
 
@@ -44,6 +44,7 @@
   border-radius: 8px 8px 0 0;
   border: 2px solid #e2e8f0;
   border-bottom: none;
+  text-align: center;
 }
 
 .theme-value {
@@ -54,6 +55,7 @@
   background: white;
   border-radius: 0 0 8px 8px;
   border: 2px solid #e2e8f0;
+  text-align: center;
 }
 
 .current-word {
