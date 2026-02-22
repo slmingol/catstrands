@@ -1,0 +1,193 @@
+import { useState } from 'react';
+import './StrandsGame.css';
+
+function StrandsGame({ puzzle }) {
+  const { grid, words, spangram, theme, rows, cols } = puzzle;
+  
+  const [selectedCells, setSelectedCells] = useState([]);
+  const [foundWords, setFoundWords] = useState([]);
+  const [isSelecting, setIsSelecting] = useState(false);
+  const [usedCells, setUsedCells] = useState(new Set());
+  const [currentWord, setCurrentWord] = useState('');
+  const [message, setMessage] = useState('');
+  const [showTheme, setShowTheme] = useState(false);
+
+  // Check if game is won
+  const isGameWon = foundWords.length === words.length + 1; // +1 for spangram
+
+
+  const getRowCol = (index) => [Math.floor(index / cols), index % cols];
+
+  const isAdjacent = (index1, index2) => {
+    const [row1, col1] = getRowCol(index1);
+    const [row2, col2] = getRowCol(index2);
+    const rowDiff = Math.abs(row1 - row2);
+    const colDiff = Math.abs(col1 - col2);
+    return rowDiff <= 1 && colDiff <= 1 && !(rowDiff === 0 && colDiff === 0);
+  };
+
+  const getWordFromCells = (cells) => {
+    return cells.map(index => grid[index]).join('');
+  };
+
+  const handleMouseDown = (index) => {
+    if (usedCells.has(index)) return;
+    setIsSelecting(true);
+    setSelectedCells([index]);
+    setCurrentWord(grid[index]);
+    setMessage('');
+  };
+
+  const handleMouseEnter = (index) => {
+    if (!isSelecting || usedCells.has(index)) return;
+    
+    const lastCell = selectedCells[selectedCells.length - 1];
+    
+    // If going back to previous cell, remove last cell
+    if (selectedCells.length > 1 && selectedCells[selectedCells.length - 2] === index) {
+      const newCells = selectedCells.slice(0, -1);
+      setSelectedCells(newCells);
+      setCurrentWord(getWordFromCells(newCells));
+      return;
+    }
+    
+    // Check if adjacent and not already in path
+    if (isAdjacent(lastCell, index) && !selectedCells.includes(index)) {
+      const newCells = [...selectedCells, index];
+      setSelectedCells(newCells);
+      setCurrentWord(getWordFromCells(newCells));
+    }
+  };
+
+  const handleMouseUp = () => {
+    if (!isSelecting) return;
+    setIsSelecting(false);
+    
+    const word = getWordFromCells(selectedCells).toUpperCase();
+    
+    // Check if word is valid
+    const isSpangram = word === spangram.toUpperCase();
+    const isValidWord = words.map(w => w.toUpperCase()).includes(word) || isSpangram;
+    
+    if (isValidWord && !foundWords.includes(word)) {
+      setFoundWords([...foundWords, word]);
+      setUsedCells(new Set([...usedCells, ...selectedCells]));
+      
+      if (isSpangram) {
+        setMessage(`🌟 Spangram found: ${word}!`);
+      } else {
+        setMessage(`✓ Found: ${word}`);
+      }
+    } else if (foundWords.includes(word)) {
+      setMessage('Already found!');
+    } else if (word.length >= 4) {
+      setMessage('Not a valid word');
+    }
+    
+    setSelectedCells([]);
+    setCurrentWord('');
+  };
+
+  const getCellClass = (index) => {
+    if (usedCells.has(index)) {
+      return 'cell found';
+    }
+    if (selectedCells.includes(index)) return 'cell selected';
+    return 'cell';
+  };
+
+  return (
+    <div className="strands-game">
+      <div className="game-info">
+        <div className="theme-section">
+          <button 
+            className="theme-button"
+            onClick={() => setShowTheme(!showTheme)}
+          >
+            {showTheme ? `Theme: ${theme}` : 'Show Theme'}
+          </button>
+        </div>
+        
+        <div className="current-word">
+          {currentWord && (
+            <span className="word-display">{currentWord}</span>
+          )}
+        </div>
+        
+        {message && !isGameWon && (
+          <div className={`message ${message.includes('✓') || message.includes('🌟') ? 'success' : 'info'}`}>
+            {message}
+          </div>
+        )}
+        
+        {isGameWon && (
+          <div className="message success">
+            🎉 Congratulations! You found all words!
+          </div>
+        )}
+      </div>
+
+      <div 
+        className="grid"
+        style={{
+          gridTemplateColumns: `repeat(${cols}, 1fr)`,
+          gridTemplateRows: `repeat(${rows}, 1fr)`
+        }}
+        onMouseLeave={() => {
+          if (isSelecting) handleMouseUp();
+        }}
+      >
+        {grid.map((letter, index) => (
+          <div
+            key={index}
+            className={getCellClass(index)}
+            onMouseDown={() => handleMouseDown(index)}
+            onMouseEnter={() => handleMouseEnter(index)}
+            onMouseUp={handleMouseUp}
+            onTouchStart={(e) => {
+              e.preventDefault();
+              handleMouseDown(index);
+            }}
+            onTouchMove={(e) => {
+              e.preventDefault();
+              const touch = e.touches[0];
+              const element = document.elementFromPoint(touch.clientX, touch.clientY);
+              if (element && element.dataset.index) {
+                handleMouseEnter(parseInt(element.dataset.index));
+              }
+            }}
+            onTouchEnd={(e) => {
+              e.preventDefault();
+              handleMouseUp();
+            }}
+            data-index={index}
+          >
+            {letter}
+          </div>
+        ))}
+      </div>
+
+      <div className="found-words">
+        <h3>Found Words ({foundWords.length}/{words.length + 1})</h3>
+        <div className="words-list">
+          {foundWords.map((word, index) => (
+            <span 
+              key={index} 
+              className={`found-word ${word.toUpperCase() === spangram.toUpperCase() ? 'spangram-word' : ''}`}
+            >
+              {word}
+            </span>
+          ))}
+        </div>
+      </div>
+
+      {isGameWon && (
+        <div className="victory-banner">
+          🎉 Perfect! You found all words including the spangram!
+        </div>
+      )}
+    </div>
+  );
+}
+
+export default StrandsGame;

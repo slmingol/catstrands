@@ -1,0 +1,267 @@
+.strands-game {
+  background: white;
+  border-radius: 16px;
+  padding: 30px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+}
+
+.game-info {
+  margin-bottom: 20px;
+}
+
+.theme-section {
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.theme-button {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.theme-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+}
+
+.theme-button:active {
+  transform: translateY(0);
+}
+
+.current-word {
+  text-align: center;
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+.word-display {
+  font-size: 1.8rem;
+  font-weight: bold;
+  letter-spacing: 4px;
+  color: #667eea;
+  text-transform: uppercase;
+}
+
+.message {
+  text-align: center;
+  padding: 10px;
+  border-radius: 8px;
+  font-weight: 600;
+  margin-bottom: 15px;
+  animation: fadeIn 0.3s;
+}
+
+.message.success {
+  background: #d4edda;
+  color: #155724;
+  border: 2px solid #c3e6cb;
+}
+
+.message.info {
+  background: #fff3cd;
+  color: #856404;
+  border: 2px solid #ffeaa7;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.grid {
+  display: grid;
+  gap: 8px;
+  margin: 20px auto;
+  max-width: 500px;
+  user-select: none;
+  touch-action: none;
+}
+
+.cell {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  border-radius: 12px;
+  font-size: 1.8rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.15s;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  color: #2d3748;
+  text-transform: uppercase;
+}
+
+.cell:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.cell.selected {
+  background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+  transform: scale(1.1);
+  box-shadow: 0 6px 16px rgba(253, 203, 110, 0.5);
+  animation: pulse 0.3s;
+}
+
+.cell.found {
+  background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+  color: white;
+  cursor: default;
+  animation: found 0.4s;
+}
+
+.cell.found.spangram {
+  background: linear-gradient(135deg, #fd79a8 0%, #e84393 100%);
+  animation: spangram 0.6s;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1.1);
+  }
+  50% {
+    transform: scale(1.15);
+  }
+}
+
+@keyframes found {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2) rotate(5deg);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes spangram {
+  0% {
+    transform: scale(1);
+  }
+  25% {
+    transform: scale(1.2) rotate(-5deg);
+  }
+  50% {
+    transform: scale(1.1) rotate(5deg);
+  }
+  75% {
+    transform: scale(1.2) rotate(-5deg);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.found-words {
+  margin-top: 30px;
+  text-align: center;
+}
+
+.found-words h3 {
+  color: #2d3748;
+  margin-bottom: 15px;
+  font-size: 1.3rem;
+}
+
+.words-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+}
+
+.found-word {
+  background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  box-shadow: 0 2px 8px rgba(9, 132, 227, 0.3);
+  animation: slideIn 0.3s;
+}
+
+.found-word.spangram-word {
+  background: linear-gradient(135deg, #fd79a8 0%, #e84393 100%);
+  padding: 10px 20px;
+  font-size: 1.1rem;
+  box-shadow: 0 4px 12px rgba(232, 67, 147, 0.4);
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.victory-banner {
+  margin-top: 20px;
+  padding: 20px;
+  background: linear-gradient(135deg, #55efc4 0%, #00b894 100%);
+  color: white;
+  border-radius: 12px;
+  text-align: center;
+  font-size: 1.3rem;
+  font-weight: bold;
+  box-shadow: 0 4px 16px rgba(0, 184, 148, 0.4);
+  animation: victoryBounce 0.6s;
+}
+
+@keyframes victoryBounce {
+  0%, 100% {
+    transform: scale(1);
+  }
+  25% {
+    transform: scale(1.05);
+  }
+  75% {
+    transform: scale(0.95);
+  }
+}
+
+/* Mobile responsiveness */
+@media (max-width: 600px) {
+  .strands-game {
+    padding: 20px;
+  }
+  
+  .cell {
+    font-size: 1.4rem;
+  }
+  
+  .word-display {
+    font-size: 1.4rem;
+    letter-spacing: 2px;
+  }
+  
+  .grid {
+    gap: 6px;
+  }
+}
