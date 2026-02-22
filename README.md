@@ -31,7 +31,9 @@ Strands is a word search game where you find themed words by connecting adjacent
 
 ## Installation
 
-\`\`\`bash
+### Standard Installation
+
+```bash
 # Install dependencies
 npm install
 
@@ -40,7 +42,88 @@ npm run dev
 
 # Build for production
 npm run build
-\`\`\`
+```
+
+### Docker Installation
+
+#### Simple Setup (Quick Start)
+
+The simplest way to run CatStrands with Docker:
+
+```bash
+# Build and start the container
+docker-compose -f docker-compose.simple.yml up -d
+
+# App will be available at http://localhost:3000
+```
+
+Stop the container:
+```bash
+docker-compose -f docker-compose.simple.yml down
+```
+
+#### Full Setup (Development & Production)
+
+Choose between development or production mode:
+
+**Development Mode** (with hot reload):
+```bash
+# Start development server
+docker-compose --profile dev up
+
+# App will be available at http://localhost:5173
+# Changes to source files will automatically reload
+```
+
+**Production Mode**:
+```bash
+# Build and start production server
+docker-compose --profile prod up -d
+
+# App will be available at http://localhost:8080
+```
+
+Stop services:
+```bash
+docker-compose --profile dev down   # for development
+docker-compose --profile prod down  # for production
+```
+
+#### Plain Docker (No Compose)
+
+```bash
+# Build the image
+docker build -t catstrands .
+
+# Run the container
+docker run -d -p 3000:80 --name catstrands catstrands
+
+# Stop and remove
+docker stop catstrands && docker rm catstrands
+```
+
+#### Using Makefile (Recommended)
+
+For convenience, use the included Makefile:
+
+```bash
+# View all available commands
+make help
+
+# Quick start options
+make simple      # Start with simple setup (port 3000)
+make dev         # Start development mode (port 5173)
+make prod        # Start production mode (port 8080)
+
+# Stop services
+make down-simple  # Stop simple setup
+make down-dev     # Stop development
+make down-prod    # Stop production
+
+# Utility commands
+make logs        # View logs
+make clean       # Remove all containers and images
+```
 
 ## Project Structure
 
@@ -81,6 +164,8 @@ Edit \`src/data/puzzles.js\` to add new puzzles:
 - **React 19**: UI library
 - **Vite**: Build tool and dev server
 - **CSS3**: Styling with animations and gradients
+- **Docker**: Containerization with multi-stage builds
+- **Nginx**: Production web server
 
 ## Development
 
