@@ -3,6 +3,10 @@ import cors from 'cors';
 import fs from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { createRequire } from 'module';
+
+const require = createRequire(import.meta.url);
+const pkg = require('../package.json');
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -118,6 +122,7 @@ app.get('/api/cache/info', async (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Cache backup server running on port ${PORT}`);
+  console.log(`CatStrands Cache Server v${pkg.version}`);
+  console.log(`Server running on port ${PORT}`);
   console.log(`Cache file: ${CACHE_FILE}`);
 });
