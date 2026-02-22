@@ -182,6 +182,15 @@
 }
 
 .connection-line {
+  stroke: #8b9d91;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  fill: none;
+  opacity: 0.9;
+  filter: drop-shadow(0 2px 4px rgba(139, 157, 145, 0.4));
+}
+
+.connection-line-found {
   stroke: #aedfee;
   stroke-width: 2.2;
   stroke-linecap: round;
@@ -190,22 +199,13 @@
   filter: drop-shadow(0 2px 4px rgba(174, 223, 238, 0.4));
 }
 
-.connection-line-found {
-  stroke: #5a94e6;
-  stroke-width: 2.2;
-  stroke-linecap: round;
-  fill: none;
-  opacity: 0.9;
-  filter: drop-shadow(0 2px 4px rgba(90, 148, 230, 0.4));
-}
-
 .connection-line-spangram {
-  stroke: #5a94e6;
+  stroke: #aedfee;
   stroke-width: 2.2;
   stroke-linecap: round;
   fill: none;
   opacity: 0.9;
-  filter: drop-shadow(0 2px 4px rgba(90, 148, 230, 0.4));
+  filter: drop-shadow(0 2px 4px rgba(174, 223, 238, 0.4));
 }
 
 .grid {
@@ -242,24 +242,24 @@
 }
 
 .cell.selected {
-  background: #aedfee;
+  background: #8b9d91;
   color: #2d3748;
-  border-color: #aedfee;
+  border-color: #8b9d91;
   animation: pulse 0.3s;
 }
 
 .cell.found {
-  background: #5a94e6;
-  color: white;
-  border-color: #5a94e6;
+  background: #aedfee;
+  color: #2d3748;
+  border-color: #aedfee;
   cursor: default;
   animation: found 0.4s;
 }
 
 .cell.found.spangram {
-  background: #5a94e6;
-  color: white;
-  border-color: #5a94e6;
+  background: #aedfee;
+  color: #2d3748;
+  border-color: #aedfee;
   animation: spangram 0.6s;
 }
 
