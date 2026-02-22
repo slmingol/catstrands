@@ -88,11 +88,11 @@ export const recordGameCompletion = (hintsUsed, wordsFound, totalWords) => {
   const stats = getStats();
   const history = getGameHistory();
   
-  // Check if already played today
-  if (today in history) {
-    // Update existing entry if they used fewer hints or completed it
+  // Check if already completed today
+  if (today in history && history[today].completed) {
+    // Update existing entry only if they used fewer hints
     const existing = history[today];
-    if (!existing.completed || hintsUsed < existing.hintsUsed) {
+    if (hintsUsed < existing.hintsUsed) {
       history[today] = {
         completed: true,
         hintsUsed,
@@ -102,10 +102,10 @@ export const recordGameCompletion = (hintsUsed, wordsFound, totalWords) => {
       };
       saveGameHistory(history);
     }
-    return stats; // Don't update stats if already recorded today
+    return stats; // Don't update stats if already completed today
   }
   
-  // Record new game
+  // Record/update game history
   history[today] = {
     completed: true,
     hintsUsed,
@@ -114,7 +114,7 @@ export const recordGameCompletion = (hintsUsed, wordsFound, totalWords) => {
     timestamp: new Date().toISOString(),
   };
   
-  // Update stats
+  // Update stats only if this is the first completion
   stats.gamesPlayed++;
   stats.gamesWon++;
   
