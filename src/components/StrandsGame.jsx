@@ -17,6 +17,9 @@ function StrandsGame({ puzzle }) {
   const [revealedHints, setRevealedHints] = useState([]);
   const [showStatsModal, setShowStatsModal] = useState(false);
   const [statsRecorded, setStatsRecorded] = useState(false);
+  const [nonSolutionWords, setNonSolutionWords] = useState([]); // Track non-solution words found
+  const [hintProgress, setHintProgress] = useState(0); // Progress towards earning a hint (0-2)
+  const [earnedHints, setEarnedHints] = useState(0); // Number of hints earned but not used
 
   // Check if game is won
   const isGameWon = foundWords.length === words.length + 1; // +1 for spangram
@@ -113,7 +116,23 @@ function StrandsGame({ puzzle }) {
     } else if (foundWords.includes(word)) {
       setMessage('Already found!');
     } else if (word.length >= 4) {
-      setMessage('Not a valid word');
+      // Valid length word that's not a solution - credit towards hint
+      if (!nonSolutionWords.includes(word)) {
+        setNonSolutionWords([...nonSolutionWords, word]);
+        const newProgress = hintProgress + 1;
+        
+        if (newProgress >= 3) {
+          // Earned a hint!
+          setEarnedHints(earnedHints + 1);
+          setHintProgress(0);
+          setMessage(`✨ Hint earned! (${earnedHints + 1} available)`);
+        } else {
+          setHintProgress(newProgress);
+          setMessage(`Good word! ${newProgress}/3 towards hint`);
+        }
+      } else {
+        setMessage('Already counted!');
+      }
     }
     
     setSelectedCells([]);
@@ -149,6 +168,12 @@ function StrandsGame({ puzzle }) {
   };
 
   const handleHint = () => {
+    // Check if hints are available
+    if (earnedHints === 0) {
+      setMessage(`Find ${3 - hintProgress} more words to earn a hint!`);
+      return;
+    }
+    
     // Get list of all theme words including spangram
     const allWords = [...words, spangram];
     // Filter out already found words
@@ -163,6 +188,7 @@ function StrandsGame({ puzzle }) {
     const hintWord = unfoundWords[Math.floor(Math.random() * unfoundWords.length)];
     setRevealedHints([...revealedHints, hintWord.toUpperCase()]);
     setHintsUsed(hintsUsed + 1);
+    setEarnedHints(earnedHints - 1);
     setMessage(`💡 Hint: Look for "${hintWord.toUpperCase()}"`);
   };
 
@@ -216,13 +242,21 @@ function StrandsGame({ puzzle }) {
           <button 
             className="hint-button"
             onClick={handleHint}
-            disabled={isGameWon}
+            disabled={isGameWon || earnedHints === 0}
           >
-            💡 Hint
+            💡 Hint {earnedHints > 0 && `(${earnedHints})`}
           </button>
-          {hintsUsed > 0 && (
-            <div className="hints-count">Hints used: {hintsUsed}</div>
-          )}
+          <div className="hint-info">
+            {hintProgress > 0 && earnedHints === 0 && (
+              <div className="hint-progress">{hintProgress}/3 words towards hint</div>
+            )}
+            {earnedHints > 0 && (
+              <div className="hints-available">{earnedHints} hint{earnedHints !== 1 ? 's' : ''} available</div>
+            )}
+            {hintsUsed > 0 && (
+              <div className="hints-count">Hints used: {hintsUsed}</div>
+            )}
+          </div>
         </div>
         
         <div className="message-container">

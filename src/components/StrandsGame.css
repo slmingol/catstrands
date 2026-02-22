@@ -384,6 +384,25 @@
   color: #666;
 }
 
+.hint-info {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.hint-progress {
+  font-size: 0.875rem;
+  color: #666;
+  font-weight: 500;
+}
+
+.hints-available {
+  font-size: 0.875rem;
+  color: #2d3748;
+  font-weight: 600;
+}
+
 @keyframes slideIn {
   from {
     opacity: 0;
