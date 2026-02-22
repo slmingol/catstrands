@@ -1,0 +1,26 @@
+{
+  "rows": 8,
+  "cols": 6,
+  "theme": "Ocean Creatures",
+  "spangram": "OCTOPUS",
+  "grid": [
+    "O", "C", "T", "O", "P", "U",
+    "S", "H", "A", "R", "K", "W",
+    "H", "A", "L", "E", "S", "E",
+    "A", "L", "D", "O", "L", "P",
+    "P", "H", "I", "N", "C", "R",
+    "R", "A", "Y", "S", "T", "A",
+    "J", "E", "L", "L", "Y", "B",
+    "S", "Q", "U", "I", "D", "S"
+  ],
+  "words": [
+    "SHARK",
+    "WHALE",
+    "SEAL",
+    "DOLPHIN",
+    "CRAB",
+    "RAYS",
+    "JELLY",
+    "SQUID"
+  ]
+}

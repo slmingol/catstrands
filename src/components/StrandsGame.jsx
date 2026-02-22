@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import './StrandsGame.css';
-import StatsModal from './StatsModal';
 import { recordGameCompletion, recordGameStart } from '../utils/statsManager';
 
 function StrandsGame({ puzzle }) {
@@ -15,11 +14,12 @@ function StrandsGame({ puzzle }) {
   const [message, setMessage] = useState('');
   const [hintsUsed, setHintsUsed] = useState(0);
   const [revealedHints, setRevealedHints] = useState([]);
-  const [showStatsModal, setShowStatsModal] = useState(false);
   const [statsRecorded, setStatsRecorded] = useState(false);
   const [nonSolutionWords, setNonSolutionWords] = useState([]); // Track non-solution words found
   const [hintProgress, setHintProgress] = useState(0); // Progress towards earning a hint (0-2)
   const [earnedHints, setEarnedHints] = useState(0); // Number of hints earned but not used
+  const [animatingCells, setAnimatingCells] = useState(new Set()); // Cells currently animating
+  const [hintedCells, setHintedCells] = useState([]); // Cells that are part of a hint
 
   // Check if game is won
   const isGameWon = foundWords.length === words.length + 1; // +1 for spangram
@@ -64,6 +64,58 @@ function StrandsGame({ puzzle }) {
     return cells.map(index => grid[index]).join('');
   };
 
+  // Find all cells that form a word in the grid using DFS
+  const findWordPath = (targetWord) => {
+    const word = targetWord.toUpperCase();
+    const visited = new Set();
+    
+    const dfs = (index, path, wordIndex) => {
+      if (wordIndex === word.length) {
+        return path;
+      }
+      
+      if (grid[index] !== word[wordIndex]) {
+        return null;
+      }
+      
+      visited.add(index);
+      path.push(index);
+      
+      // Try all adjacent cells
+      const [row, col] = getRowCol(index);
+      for (let dr = -1; dr <= 1; dr++) {
+        for (let dc = -1; dc <= 1; dc++) {
+          if (dr === 0 && dc === 0) continue;
+          
+          const newRow = row + dr;
+          const newCol = col + dc;
+          
+          if (newRow >= 0 && newRow < rows && newCol >= 0 && newCol < cols) {
+            const newIndex = newRow * cols + newCol;
+            if (!visited.has(newIndex)) {
+              const result = dfs(newIndex, [...path], wordIndex + 1);
+              if (result) return result;
+            }
+          }
+        }
+      }
+      
+      visited.delete(index);
+      return null;
+    };
+    
+    // Try starting from each cell
+    for (let i = 0; i < grid.length; i++) {
+      if (grid[i] === word[0]) {
+        visited.clear();
+        const result = dfs(i, [], 0);
+        if (result) return result;
+      }
+    }
+    
+    return null;
+  };
+
   const handleMouseDown = (index) => {
     if (usedCells.has(index)) return;
     setIsSelecting(true);
@@ -104,9 +156,29 @@ function StrandsGame({ puzzle }) {
     const isValidWord = words.map(w => w.toUpperCase()).includes(word) || isSpangram;
     
     if (isValidWord && !foundWords.includes(word)) {
+      // Trigger animation sequence for each cell
+      const cellsToAnimate = [...selectedCells];
+      cellsToAnimate.forEach((cellIndex, i) => {
+        setTimeout(() => {
+          setAnimatingCells(prev => new Set([...prev, cellIndex]));
+          
+          // Remove from animating after animation completes
+          setTimeout(() => {
+            setAnimatingCells(prev => {
+              const next = new Set(prev);
+              next.delete(cellIndex);
+              return next;
+            });
+          }, 400); // Match animation duration
+        }, i * 60); // Stagger by 60ms per cell
+      });
+      
       setFoundWords([...foundWords, word]);
       setFoundWordPaths([...foundWordPaths, { word, cells: [...selectedCells], isSpangram }]); // Store the path
       setUsedCells(new Set([...usedCells, ...selectedCells]));
+      
+      // Remove hinted cells that were just found
+      setHintedCells(prev => prev.filter(cellIndex => !selectedCells.includes(cellIndex)));
       
       if (isSpangram) {
         setMessage(`🌟 Spangram found: ${word}!`);
@@ -140,16 +212,30 @@ function StrandsGame({ puzzle }) {
   };
 
   const getCellClass = (index) => {
-    if (usedCells.has(index)) {
-      // Check if this cell is part of the spangram
+    let classes = ['cell'];
+    
+    if (animatingCells.has(index)) {
+      classes.push('animating');
       const spangramPath = foundWordPaths.find(wp => wp.isSpangram);
       if (spangramPath && spangramPath.cells.includes(index)) {
-        return 'cell found spangram';
+        classes.push('spangram');
       }
-      return 'cell found';
+    } else if (usedCells.has(index)) {
+      classes.push('found');
+      const spangramPath = foundWordPaths.find(wp => wp.isSpangram);
+      if (spangramPath && spangramPath.cells.includes(index)) {
+        classes.push('spangram');
+      }
+    } else if (selectedCells.includes(index)) {
+      classes.push('selected');
     }
-    if (selectedCells.includes(index)) return 'cell selected';
-    return 'cell';
+    
+    // Add hint class if this cell is part of a hint (and not yet found)
+    if (hintedCells.includes(index) && !usedCells.has(index)) {
+      classes.push('hinted');
+    }
+    
+    return classes.join(' ');
   };
 
   // Calculate the center position of a cell for drawing lines
@@ -176,45 +262,40 @@ function StrandsGame({ puzzle }) {
     
     // Get list of all theme words including spangram
     const allWords = [...words, spangram];
-    // Filter out already found words
-    const unfoundWords = allWords.filter(w => !foundWords.includes(w.toUpperCase()));
+    // Filter out already found words and already hinted words
+    const unfoundWords = allWords.filter(w => 
+      !foundWords.includes(w.toUpperCase()) && 
+      !revealedHints.includes(w.toUpperCase())
+    );
     
     if (unfoundWords.length === 0) {
-      setMessage('All words already found!');
+      setMessage('All words already found or hinted!');
       return;
     }
     
     // Pick a random unfound word to reveal
     const hintWord = unfoundWords[Math.floor(Math.random() * unfoundWords.length)];
-    setRevealedHints([...revealedHints, hintWord.toUpperCase()]);
-    setHintsUsed(hintsUsed + 1);
-    setEarnedHints(earnedHints - 1);
-    setMessage(`💡 Hint: Look for "${hintWord.toUpperCase()}"`);
-  };
-
-  // Format today's date
-  const getTodaysDate = () => {
-    const today = new Date();
-    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-    return today.toLocaleDateString('en-US', options);
+    
+    // Find the path for this word
+    const wordPath = findWordPath(hintWord);
+    
+    if (wordPath) {
+      setHintedCells([...hintedCells, ...wordPath]);
+      setRevealedHints([...revealedHints, hintWord.toUpperCase()]);
+      setHintsUsed(hintsUsed + 1);
+      setEarnedHints(earnedHints - 1);
+      setMessage(`💡 Hint: Letters circled!`);
+    } else {
+      // Fallback if path not found
+      setRevealedHints([...revealedHints, hintWord.toUpperCase()]);
+      setHintsUsed(hintsUsed + 1);
+      setEarnedHints(earnedHints - 1);
+      setMessage(`💡 Hint: Look for "${hintWord.toUpperCase()}"`);
+    }
   };
 
   return (
     <div className="strands-game">
-      <StatsModal isOpen={showStatsModal} onClose={() => setShowStatsModal(false)} />
-      
-      <div className="date-stats-row">
-        <div className="date-display">
-          {getTodaysDate()}
-        </div>
-        <button 
-          className="stats-button"
-          onClick={() => setShowStatsModal(true)}
-          title="View Statistics"
-        >
-          📊
-        </button>
-      </div>
       
       {isGameWon && (
         <div className="victory-banner">
@@ -271,12 +352,7 @@ function StrandsGame({ puzzle }) {
               {message}
             </div>
           )}
-          
-          {isGameWon && (
-            <div className="message success">
-              🎉 Congratulations! You found all words!
-            </div>
-          )}
+
         </div>
 
       </div>

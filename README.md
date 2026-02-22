@@ -16,11 +16,54 @@ Strands is a word search game where you find themed words by connecting adjacent
 ## Features
 
 ✨ **Interactive Grid**: Click and drag to select letters
-🎯 **Multiple Puzzles**: 5 different themed puzzles to solve
-🌟 **Spangram Detection**: Special highlighting for the theme-defining word
+🎯 **Multiple Puzzles**: Play NYT Strands puzzles or local themed puzzles
+🌟 **Spangram Detection**: Special highlighting for the theme-defining word (yellow)
 📱 **Responsive Design**: Works on desktop and mobile devices
-🎨 **Beautiful UI**: Smooth animations and gradient backgrounds
+🎨 **Beautiful UI**: Smooth animations with bubbling effects and gradient backgrounds
 🏆 **Progress Tracking**: See which words you've found
+📰 **NYT Integration**: Auto-fetch daily puzzles from NYT Strands archive
+📚 **Archive Browser**: Browse and download 721+ puzzles since March 4, 2024
+📁 **Import/Export**: Create, share, and play custom puzzles
+💡 **Smart Hints**: Dashed circle hints using pathfinding
+🔄 **Auto-Update**: Automatically downloads new puzzles daily
+
+### Import/Export Custom Puzzles
+
+Create and share your own Strands puzzles:
+
+#### 📥 Import Puzzle
+1. Click the **"📂 Import"** button
+2. Select a JSON file with your custom puzzle
+3. The puzzle loads instantly and is playable
+
+#### 📤 Export Puzzle
+1. Play any puzzle (NYT or custom)
+2. Click the **"💾 Export"** button
+3. Save the JSON file to share with others
+
+#### 📝 Create Your Own Puzzle
+1. Click the **"📝 Template"** button to download a template
+2. Edit the JSON file with your puzzle data:
+   ```json
+   {
+     "rows": 8,
+     "cols": 6,
+     "theme": "Office Supplies",
+     "spangram": "PAPERS",
+     "grid": ["P","A","P","E","R","S", ...48 letters total],
+     "words": ["TAPE", "GLUE", "FILE", "DESK", "PENCIL"]
+   }
+   ```
+3. Import your puzzle and play!
+
+**Example**: See `example_office_supplies.json` in the project root
+
+**Puzzle Format Rules:**
+- Grid size: `rows` × `cols` = total letters in `grid` array
+- Letters: Uppercase single characters (A-Z)
+- Grid order: Left-to-right, top-to-bottom
+- Words: Must form continuous paths through adjacent cells (includes diagonals)
+- Spangram: Describes the theme, wraps through the grid
 
 ## How to Play
 
@@ -187,7 +230,16 @@ strands-clone/
 
 ## Adding New Puzzles
 
-Edit \`src/data/puzzles.js\` to add new puzzles:
+### Method 1: Import Feature (Recommended)
+
+Use the built-in import/export feature:
+1. Download template: Click **"📝 Template"** button
+2. Edit the JSON with your puzzle
+3. Import: Click **"📂 Import"** and select your file
+
+### Method 2: Edit Source Code
+
+Edit `src/data/puzzles.js` to add puzzles directly to the app:
 
 \`\`\`javascript
 {

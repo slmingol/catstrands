@@ -1,0 +1,26 @@
+{
+  "rows": 8,
+  "cols": 6,
+  "theme": "Programming Languages",
+  "spangram": "JAVASCRIPT",
+  "grid": [
+    "J", "A", "V", "A", "S", "C",
+    "R", "I", "P", "Y", "T", "H",
+    "O", "N", "R", "U", "B", "Y",
+    "R", "U", "S", "T", "S", "W",
+    "I", "F", "T", "C", "O", "D",
+    "E", "P", "H", "P", "G", "O",
+    "L", "A", "N", "G", "S", "K",
+    "O", "T", "L", "I", "N", "E"
+  ],
+  "words": [
+    "PYTHON",
+    "JAVA",
+    "RUBY",
+    "RUST",
+    "SWIFT",
+    "CODE",
+    "PHP",
+    "GOLANG"
+  ]
+}

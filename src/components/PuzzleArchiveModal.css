@@ -1,0 +1,272 @@
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal-content {
+  background: white;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 700px;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: #333;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  font-size: 2rem;
+  color: #999;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.close-button:hover {
+  background: #f5f5f5;
+  color: #333;
+}
+
+.modal-stats {
+  display: flex;
+  gap: 24px;
+  padding: 16px 24px;
+  background: #f8f9fa;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.stat {
+  font-size: 0.95rem;
+  color: #666;
+}
+
+.stat strong {
+  color: #1976d2;
+  font-size: 1.2rem;
+  display: block;
+}
+
+.modal-actions {
+  padding: 16px 24px;
+  border-bottom: 1px solid #e0e0e0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.filter-buttons,
+.select-buttons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.filter-buttons button,
+.select-buttons button {
+  padding: 6px 12px;
+  border: 1px solid #ccc;
+  background: white;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+}
+
+.filter-buttons button:hover,
+.select-buttons button:hover {
+  background: #f5f5f5;
+  border-color: #999;
+}
+
+.filter-buttons button.active {
+  background: #1976d2;
+  color: white;
+  border-color: #1976d2;
+}
+
+.puzzle-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px;
+  min-height: 300px;
+  max-height: 450px;
+}
+
+.puzzle-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: white;
+}
+
+.puzzle-item:hover {
+  border-color: #1976d2;
+  background: #f8f9fa;
+}
+
+.puzzle-item.selected {
+  border-color: #1976d2;
+  background: #e3f2fd;
+}
+
+.puzzle-item.cached {
+  background: #f1f8e9;
+}
+
+.puzzle-item.cached.selected {
+  background: #c5e1a5;
+}
+
+.puzzle-item input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.puzzle-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.puzzle-date {
+  font-weight: 600;
+  color: #333;
+  font-size: 0.95rem;
+  margin-bottom: 2px;
+}
+
+.puzzle-theme {
+  font-size: 0.85rem;
+  color: #666;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cached-badge {
+  font-size: 0.8rem;
+  color: #2e7d32;
+  font-weight: 600;
+  background: #c8e6c9;
+  padding: 4px 8px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.modal-footer {
+  display: flex;
+  gap: 12px;
+  padding: 16px 24px;
+  border-top: 2px solid #e0e0e0;
+  justify-content: flex-end;
+}
+
+.modal-footer button {
+  padding: 10px 24px;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+}
+
+.cancel-button {
+  background: #f5f5f5;
+  color: #666;
+}
+
+.cancel-button:hover {
+  background: #e0e0e0;
+  color: #333;
+}
+
+.download-button {
+  background: #4CAF50;
+  color: white;
+}
+
+.download-button:hover:not(:disabled) {
+  background: #45a049;
+}
+
+.download-button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Scrollbar styling */
+.puzzle-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.puzzle-list::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.puzzle-list::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+.puzzle-list::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}

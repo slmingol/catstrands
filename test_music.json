@@ -1,0 +1,26 @@
+{
+  "rows": 8,
+  "cols": 6,
+  "theme": "Musical Instruments",
+  "spangram": "TRUMPET",
+  "grid": [
+    "T", "R", "U", "M", "P", "E",
+    "T", "D", "R", "U", "M", "S",
+    "F", "L", "U", "T", "E", "G",
+    "U", "I", "T", "A", "R", "V",
+    "I", "O", "L", "I", "N", "P",
+    "I", "A", "N", "O", "B", "A",
+    "S", "S", "H", "O", "R", "N",
+    "C", "E", "L", "L", "O", "S"
+  ],
+  "words": [
+    "DRUMS",
+    "FLUTE",
+    "GUITAR",
+    "VIOLIN",
+    "PIANO",
+    "BASS",
+    "HORN",
+    "CELLO"
+  ]
+}

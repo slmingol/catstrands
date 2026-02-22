@@ -1,0 +1,124 @@
+.settings-modal {
+  max-width: 500px;
+  max-height: 80vh;
+}
+
+.settings-content {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 20px;
+}
+
+.settings-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.settings-section h3 {
+  font-size: 1.1rem;
+  color: #2d3748;
+  margin: 0;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.settings-button {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 14px 18px;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: white;
+  color: #2d3748;
+  text-align: left;
+  width: 100%;
+}
+
+.settings-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.settings-button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.settings-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.settings-button .button-hint {
+  font-size: 0.85rem;
+  font-weight: 400;
+  color: #718096;
+  margin-top: 4px;
+}
+
+/* Button color variants */
+.settings-button.primary {
+  border-color: #4299e1;
+  background: #ebf8ff;
+}
+
+.settings-button.primary:hover:not(:disabled) {
+  background: #bee3f8;
+  border-color: #3182ce;
+}
+
+.settings-button.success {
+  border-color: #48bb78;
+  background: #f0fff4;
+}
+
+.settings-button.success:hover:not(:disabled) {
+  background: #c6f6d5;
+  border-color: #38a169;
+}
+
+.settings-button.danger {
+  border-color: #f56565;
+  background: #fff5f5;
+}
+
+.settings-button.danger:hover:not(:disabled) {
+  background: #fed7d7;
+  border-color: #e53e3e;
+}
+
+.settings-button.info {
+  border-color: #4299e1;
+  background: #ebf8ff;
+}
+
+.settings-button.info:hover:not(:disabled) {
+  background: #bee3f8;
+  border-color: #3182ce;
+}
+
+.settings-button.warning {
+  border-color: #ed8936;
+  background: #fffaf0;
+}
+
+.settings-button.warning:hover:not(:disabled) {
+  background: #feebc8;
+  border-color: #dd6b20;
+}
+
+.settings-button.secondary {
+  border-color: #9f7aea;
+  background: #faf5ff;
+}
+
+.settings-button.secondary:hover:not(:disabled) {
+  background: #e9d8fd;
+  border-color: #805ad5;
+}

@@ -1,0 +1,28 @@
+{
+  "rows": 8,
+  "cols": 6,
+  "theme": "Office Supplies",
+  "spangram": "PAPERS",
+  "grid": [
+    "P", "A", "P", "E", "R", "S",
+    "T", "A", "P", "E", "G", "L",
+    "U", "E", "F", "I", "L", "E",
+    "T", "A", "C", "K", "C", "L",
+    "I", "P", "D", "E", "S", "K",
+    "I", "N", "K", "P", "E", "N",
+    "C", "I", "L", "E", "R", "A",
+    "S", "E", "R", "S", "T", "A"
+  ],
+  "words": [
+    "TAPE",
+    "GLUE",
+    "FILE",
+    "TACK",
+    "CLIP",
+    "DESK",
+    "INK",
+    "PENCIL",
+    "ERASER",
+    "STAPLER"
+  ]
+}
