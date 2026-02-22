@@ -35,6 +35,17 @@ function StrandsGame({ puzzle }) {
     }
   }, [isGameWon, statsRecorded, hintsUsed, foundWords.length, words.length]);
 
+  // Auto-clear error and info messages after 2 seconds
+  useEffect(() => {
+    if (message) {
+      const isSuccess = message.includes('✓') || message.includes('🌟');
+      const timer = setTimeout(() => {
+        setMessage('');
+      }, isSuccess ? 3000 : 2000); // Success messages stay longer
+      return () => clearTimeout(timer);
+    }
+  }, [message]);
+
 
   const getRowCol = (index) => [Math.floor(index / cols), index % cols];
 
