@@ -263,21 +263,36 @@ export async function fetchPuzzleWithCache(date, useCache = true) {
 export function exportCache() {
   const cacheData = {};
   
+  console.log(`📦 Total localStorage items: ${localStorage.length}`);
+  
   // Export all localStorage items that start with 'nyt-strands-'
   for (let i = 0; i < localStorage.length; i++) {
     const key = localStorage.key(i);
     if (key && key.startsWith('nyt-strands-')) {
       cacheData[key] = localStorage.getItem(key);
+      console.log(`✅ Exporting: ${key}`);
+    } else if (key) {
+      console.log(`⏭️  Skipping: ${key}`);
     }
   }
+  
+  const cacheKeys = Object.keys(cacheData);
+  console.log(`📊 Exporting ${cacheKeys.length} cache entries`);
   
   const metadata = getCacheMetadata();
   const exportData = {
     version: '1.0',
     exportDate: new Date().toISOString(),
-    puzzleCount: metadata.puzzleCount,
+    puzzleCount: cacheKeys.length,
     cache: cacheData
   };
+  
+  console.log(`📄 Export data:`, {
+    version: exportData.version,
+    exportDate: exportData.exportDate,
+    puzzleCount: exportData.puzzleCount,
+    cacheKeys: cacheKeys.slice(0, 5)  // Show first 5 keys
+  });
   
   // Create blob and download
   const jsonString = JSON.stringify(exportData, null, 2);
