@@ -93,13 +93,39 @@
   }
 }
 
+.grid-container {
+  position: relative;
+  margin: 20px auto;
+  max-width: 500px;
+}
+
+.connection-lines {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.connection-line {
+  stroke: #f39c12;
+  stroke-width: 0.8;
+  stroke-linecap: round;
+  fill: none;
+  opacity: 0.9;
+  filter: drop-shadow(0 2px 4px rgba(243, 156, 18, 0.4));
+}
+
 .grid {
   display: grid;
   gap: 8px;
-  margin: 20px auto;
   max-width: 500px;
   user-select: none;
   touch-action: none;
+  position: relative;
+  z-index: 1;
 }
 
 .cell {
@@ -117,6 +143,8 @@
   color: #2d3748;
   text-transform: uppercase;
   border: 3px solid transparent;
+  position: relative;
+  z-index: 2;
 }
 
 .cell:hover {

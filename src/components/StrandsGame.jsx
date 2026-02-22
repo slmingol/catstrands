@@ -96,6 +96,16 @@ function StrandsGame({ puzzle }) {
     return 'cell';
   };
 
+  // Calculate the center position of a cell for drawing lines
+  const getCellCenter = (index) => {
+    const row = Math.floor(index / cols);
+    const col = index % cols;
+    // Each cell is 1fr, so we calculate percentage positions
+    const x = (col + 0.5) / cols * 100; // Center of cell in percentage
+    const y = (row + 0.5) / rows * 100; // Center of cell in percentage
+    return { x, y };
+  };
+
   return (
     <div className="strands-game">
       <div className="game-info">
@@ -129,44 +139,67 @@ function StrandsGame({ puzzle }) {
         </div>
       </div>
 
-      <div 
-        className="grid"
-        style={{
-          gridTemplateColumns: `repeat(${cols}, 1fr)`,
-          gridTemplateRows: `repeat(${rows}, 1fr)`
-        }}
-        onMouseLeave={() => {
-          if (isSelecting) handleMouseUp();
-        }}
-      >
-        {grid.map((letter, index) => (
-          <div
-            key={index}
-            className={getCellClass(index)}
-            onMouseDown={() => handleMouseDown(index)}
-            onMouseEnter={() => handleMouseEnter(index)}
-            onMouseUp={handleMouseUp}
-            onTouchStart={(e) => {
-              e.preventDefault();
-              handleMouseDown(index);
-            }}
-            onTouchMove={(e) => {
-              e.preventDefault();
-              const touch = e.touches[0];
-              const element = document.elementFromPoint(touch.clientX, touch.clientY);
-              if (element && element.dataset.index) {
-                handleMouseEnter(parseInt(element.dataset.index));
-              }
-            }}
-            onTouchEnd={(e) => {
-              e.preventDefault();
-              handleMouseUp();
-            }}
-            data-index={index}
-          >
-            {letter}
-          </div>
-        ))}
+      <div className="grid-container">
+        <svg className="connection-lines" viewBox="0 0 100 100" preserveAspectRatio="none">
+          {selectedCells.length > 1 && selectedCells.map((cellIndex, i) => {
+            if (i === 0) return null; // Skip first cell as it has no previous cell
+            const prevCell = selectedCells[i - 1];
+            const currentCell = cellIndex;
+            const start = getCellCenter(prevCell);
+            const end = getCellCenter(currentCell);
+            
+            return (
+              <line
+                key={`line-${i}`}
+                x1={`${start.x}%`}
+                y1={`${start.y}%`}
+                x2={`${end.x}%`}
+                y2={`${end.y}%`}
+                className="connection-line"
+              />
+            );
+          })}
+        </svg>
+
+        <div 
+          className="grid"
+          style={{
+            gridTemplateColumns: `repeat(${cols}, 1fr)`,
+            gridTemplateRows: `repeat(${rows}, 1fr)`
+          }}
+          onMouseLeave={() => {
+            if (isSelecting) handleMouseUp();
+          }}
+        >
+          {grid.map((letter, index) => (
+            <div
+              key={index}
+              className={getCellClass(index)}
+              onMouseDown={() => handleMouseDown(index)}
+              onMouseEnter={() => handleMouseEnter(index)}
+              onMouseUp={handleMouseUp}
+              onTouchStart={(e) => {
+                e.preventDefault();
+                handleMouseDown(index);
+              }}
+              onTouchMove={(e) => {
+                e.preventDefault();
+                const touch = e.touches[0];
+                const element = document.elementFromPoint(touch.clientX, touch.clientY);
+                if (element && element.dataset.index) {
+                  handleMouseEnter(parseInt(element.dataset.index));
+                }
+              }}
+              onTouchEnd={(e) => {
+                e.preventDefault();
+                handleMouseUp();
+              }}
+              data-index={index}
+            >
+              {letter}
+            </div>
+          ))}
+        </div>
       </div>
 
       <div className="found-words">
