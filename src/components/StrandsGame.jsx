@@ -141,7 +141,7 @@ function StrandsGame({ puzzle }) {
         </div>
 
         <div className="found-words">
-          <h3>Found Words ({foundWords.length}/{words.length + 1})</h3>
+          <h3>{foundWords.length} of {words.length + 1} theme words found.</h3>
           <div className="words-list">
             {foundWords.map((word, index) => (
               <span 
