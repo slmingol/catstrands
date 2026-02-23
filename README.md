@@ -1,5 +1,6 @@
 # CatStrands 🐱
 
+[![Version](https://img.shields.io/badge/version-1.0.3-blue.svg)](https://github.com/slmingol/catstrands/releases)
 [![Build and Push Docker Image](https://github.com/slmingol/catstrands/actions/workflows/docker-build.yml/badge.svg)](https://github.com/slmingol/catstrands/actions/workflows/docker-build.yml)
 [![Docker Image](https://img.shields.io/badge/docker-ghcr.io-blue?logo=docker)](https://github.com/slmingol/catstrands/pkgs/container/catstrands)
 
