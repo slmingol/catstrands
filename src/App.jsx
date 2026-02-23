@@ -28,7 +28,7 @@ import {
 // NYT Strands launched on March 4, 2024
 const STRANDS_LAUNCH_DATE = new Date('2024-03-04');
 
-// Calculate days since Strands launch
+// Calculate days since Strands launch (inclusive of launch day and today)
 const getDaysSinceLaunch = () => {
   const today = new Date();
   today.setHours(0, 0, 0, 0); // Start of today
@@ -40,8 +40,8 @@ const getDaysSinceLaunch = () => {
   const diffTime = today - launch;
   const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
   
-  // Return the number of complete days (720 as of Feb 22, 2026)
-  return Math.max(1, diffDays);
+  // Return days + 1 to include both launch day and today (721 as of Feb 22, 2026)
+  return Math.max(1, diffDays + 1);
 };
 
 function App() {

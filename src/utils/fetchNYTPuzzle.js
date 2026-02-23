@@ -218,10 +218,14 @@ export async function fetchAndCacheRecentPuzzles(days = 365, onProgress = null) 
  */
 export function getCacheMetadata() {
   try {
+    // Get actual count from cache to avoid stale metadata
+    const cache = JSON.parse(localStorage.getItem(CACHE_KEY) || '{}');
+    const actualCount = Object.keys(cache).length;
+    
     const meta = JSON.parse(localStorage.getItem(CACHE_META_KEY) || '{}');
     return {
       lastUpdated: meta.lastUpdated || null,
-      puzzleCount: meta.puzzleCount || 0
+      puzzleCount: actualCount // Use actual count from cache
     };
   } catch {
     return { lastUpdated: null, puzzleCount: 0 };
