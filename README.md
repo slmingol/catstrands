@@ -15,21 +15,21 @@ Strands is a word search game where you find themed words by connecting adjacent
 
 ## Features
 
-✨ **Interactive Grid**: Click and drag to select letters
-🎯 **Multiple Puzzles**: Play NYT Strands puzzles or local themed puzzles
-🌟 **Spangram Detection**: Special highlighting for the theme-defining word (yellow)
-📱 **Responsive Design**: Works on desktop and mobile devices
-🎨 **Beautiful UI**: Smooth animations with bubbling effects and gradient backgrounds
-🏆 **Progress Tracking**: See which words you've found
-� **Stats Modal**: Track your game history, wins, and hints used
-📰 **NYT Integration**: Auto-fetch daily puzzles from NYT Strands archive
-📚 **Archive Browser**: Browse and download 720+ puzzles since March 4, 2024
-📁 **Import/Export**: Create, share, and play custom puzzles
-💾 **Cache Export/Import**: Transfer your puzzle cache between browsers or devices
-🔄 **Auto-Backup**: Automatically backs up cache to server after downloading puzzles
-💡 **Smart Hints**: Earn hints by finding non-solution words, dashed circles show letter positions
-⚙️ **Settings Modal**: Clean UI with gear icon for all configuration options
-🌐 **Persistent Storage**: Server-side cache backup survives browser cache clears
+- ✨ **Interactive Grid** - Click and drag to select letters
+- 🎯 **Multiple Puzzles** - Play NYT Strands puzzles or local themed puzzles
+- 🌟 **Spangram Detection** - Special highlighting for the theme-defining word (yellow)
+- 📱 **Responsive Design** - Works on desktop and mobile devices
+- 🎨 **Beautiful UI** - Smooth animations with bubbling effects and gradient backgrounds
+- 🏆 **Progress Tracking** - See which words you've found
+- 📊 **Stats Modal** - Track your game history, wins, and hints used
+- 📰 **NYT Integration** - Auto-fetch daily puzzles from NYT Strands archive
+- 📚 **Archive Browser** - Browse and download 720+ puzzles since March 4, 2024
+- 📁 **Import/Export** - Create, share, and play custom puzzles
+- 💾 **Cache Export/Import** - Transfer your puzzle cache between browsers or devices
+- 🔄 **Auto-Backup** - Automatically backs up cache to server after downloading puzzles
+- 💡 **Smart Hints** - Earn hints by finding non-solution words, dashed circles show letter positions
+- ⚙️ **Settings Modal** - Clean UI with gear icon for all configuration options
+- 🌐 **Persistent Storage** - Server-side cache backup survives browser cache clears
 
 ### Import/Export Custom Puzzles
 
