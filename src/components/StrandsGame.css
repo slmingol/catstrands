@@ -65,7 +65,8 @@
 .game-content {
   display: flex;
   gap: 160px;
-  margin-top: 20px;
+  margin-top: -40px;
+  margin-left: 75px;
 }
 
 .left-panel {
@@ -482,7 +483,7 @@
 }
 
 .victory-banner {
-  margin: 20px auto -60px;
+  margin: 0 auto 0;
   padding: 12px 24px;
   width: 63vw;
   background: #ffedc8;
@@ -495,6 +496,7 @@
   animation: victoryBounce 0.6s;
   position: relative;
   z-index: 100;
+  transform: translateY(-10px);
 }
 
 @keyframes victoryBounce {
