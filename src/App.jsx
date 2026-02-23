@@ -447,7 +447,14 @@ function App() {
     return (
       <div className="app">
         <header className="app-header">
-          <h1>🐱 CatStrands</h1>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px' }}>
+            <img 
+              src="/cat_strands.png" 
+              alt="CatStrands Logo" 
+              style={{ width: '48px', height: '48px', borderRadius: '8px' }}
+            />
+            <h1>CatStrands</h1>
+          </div>
         </header>
         <div style={{ textAlign: 'center', padding: '40px', fontSize: '1.2rem' }}>
           Loading puzzle...
@@ -479,7 +486,14 @@ function App() {
       />
 
       <header className="app-header">
-        <h1>🐱 CatStrands</h1>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px' }}>
+          <img 
+            src="/cat_strands.png" 
+            alt="CatStrands Logo" 
+            style={{ width: '48px', height: '48px', borderRadius: '8px' }}
+          />
+          <h1>CatStrands</h1>
+        </div>
         
         {/* Hidden file input for puzzle import */}
         <input 
