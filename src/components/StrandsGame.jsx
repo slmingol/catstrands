@@ -297,11 +297,9 @@ function StrandsGame({ puzzle }) {
   return (
     <div className="strands-game">
       
-      {isGameWon && (
-        <div className="victory-banner">
-          🎉 Perfect! You found all words including the spangram!
-        </div>
-      )}
+      <div className={`victory-banner ${!isGameWon ? 'victory-banner-hidden' : ''}`}>
+        {isGameWon && '🎉 Perfect! You found all words including the spangram!'}
+      </div>
       
       <div className="game-content">
       <div className="left-panel">
