@@ -1,16 +1,1 @@
-services:
-  catstrands:
-    image: ghcr.io/slmingol/catstrands:latest
-    container_name: catstrands
-    ports:
-      - "3000:80"
-      - "3001:3001"
-    volumes:
-      - catstrands-cache:/app/data
-    environment:
-      - CACHE_FILE=/app/data/cache-backup.json
-    restart: unless-stopped
-
-volumes:
-  catstrands-cache:
-    driver: local
+docker/docker-compose.simple.yml

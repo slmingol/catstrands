@@ -38,10 +38,10 @@ COPY --from=builder /app/dist /usr/share/nginx/html
 COPY server ./server
 
 # Copy nginx config
-COPY nginx.conf /etc/nginx/http.d/default.conf
+COPY docker/nginx.conf /etc/nginx/http.d/default.conf
 
 # Copy entrypoint script
-COPY docker-entrypoint.sh /usr/local/bin/
+COPY docker/docker-entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
 # Create data directory for cache backups
