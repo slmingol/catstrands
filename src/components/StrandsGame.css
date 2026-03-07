@@ -86,6 +86,58 @@
   margin-top: -7px;
 }
 
+@media (max-width: 900px) {
+  .strands-game {
+    padding: 10px 16px;
+    overflow-x: hidden;
+  }
+
+  .date-stats-row {
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  .game-content {
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    margin-left: 0;
+    margin-top: 0;
+  }
+
+  .left-panel {
+    flex: 0 0 auto;
+    width: 100%;
+    max-width: 420px;
+    margin-left: 0;
+  }
+
+  .theme-section {
+    margin-top: 12px;
+  }
+
+  .right-panel {
+    width: 100%;
+    margin-top: 0;
+  }
+
+  .victory-banner {
+    width: 90%;
+    max-width: 420px;
+  }
+
+  .found-words {
+    margin-top: 0;
+  }
+
+  .hint-section {
+    margin-top: 16px;
+  }
+}
+
 .game-info {
   margin-bottom: 20px;
 }
