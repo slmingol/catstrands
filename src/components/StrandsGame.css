@@ -588,9 +588,8 @@
   }
 
   .grid-container {
-    width: 100%;
-    margin-top: 0;
-    margin-bottom: 0;
+    width: 90%;
+    margin: 0 auto;
     padding: 0;
   }
 
