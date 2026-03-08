@@ -132,6 +132,22 @@
     order: 1;
   }
 
+  .current-word {
+    min-height: 0;
+    margin-bottom: 0;
+    padding: 5px 0;
+  }
+
+  .word-display {
+    font-size: 2rem;
+  }
+
+  .message-container {
+    min-height: 0;
+    margin-bottom: 0;
+    padding: 5px 0;
+  }
+
   .victory-banner {
     width: 90%;
     max-width: 420px;
@@ -143,16 +159,6 @@
 
   .hint-section {
     margin-top: 8px;
-  }
-
-  .current-word {
-    min-height: 40px;
-    margin-bottom: 8px;
-  }
-
-  .message-container {
-    min-height: 40px;
-    margin-bottom: 8px;
   }
 }
 
