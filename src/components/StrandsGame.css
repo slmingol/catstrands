@@ -124,13 +124,14 @@
 
   .theme-section {
     margin-top: 0;
-    margin-bottom: 8px;
+    margin-bottom: 60px;
   }
 
   .right-panel {
     width: 100%;
     margin-top: -25px;
     order: 1;
+    position: relative;
   }
 
   .current-word {
@@ -167,15 +168,14 @@
   }
 
   .hint-section {
-    position: fixed;
-    bottom: 20px;
+    position: absolute;
+    top: 145px;
     left: 50%;
     transform: translateX(-50%);
-    z-index: 100;
-    background: rgba(255, 255, 255, 0.95);
-    padding: 10px;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    z-index: 50;
+    width: calc(100% - 32px);
+    max-width: 420px;
+    margin: 0;
   }
 }
 
