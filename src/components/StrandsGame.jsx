@@ -294,6 +294,17 @@ function StrandsGame({ puzzle }) {
     }
   };
 
+  const handleReveal = () => {
+    // Get all theme words including spangram
+    const allWords = [...words, spangram];
+    
+    // Simply add all words to the found words list
+    const allWordsUpper = allWords.map(w => w.toUpperCase());
+    setFoundWords(allWordsUpper);
+    setHintedCells([]);
+    setMessage('🔍 All words revealed!');
+  };
+
   return (
     <div className="strands-game">
       
@@ -330,6 +341,13 @@ function StrandsGame({ puzzle }) {
             disabled={isGameWon || earnedHints === 0}
           >
             💡 Hint {earnedHints > 0 && `(${earnedHints})`}
+          </button>
+          <button 
+            className="reveal-button"
+            onClick={handleReveal}
+            disabled={isGameWon}
+          >
+            🔍 Reveal
           </button>
           <div className="hint-info">
             {hintProgress > 0 && earnedHints === 0 && (

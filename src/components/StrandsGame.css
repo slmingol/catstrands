@@ -182,9 +182,11 @@
     align-items: center;
     margin-top: 8px;
     margin-bottom: 12px;
+    gap: 10px;
   }
 
-  .hint-button {
+  .hint-button,
+  .reveal-button {
     min-width: 160px;
     padding: 10px 40px;
     border-radius: 24px;
@@ -525,9 +527,14 @@
 .hint-section {
   margin-top: 44px;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
 }
 
-.hint-button {
+.hint-button,
+.reveal-button {
   background: white;
   color: #999;
   border: 2px solid #c0c0c0;
@@ -541,17 +548,20 @@
   min-width: 192px;
 }
 
-.hint-button:hover:not(:disabled) {
+.hint-button:hover:not(:disabled),
+.reveal-button:hover:not(:disabled) {
   background: #f7fafc;
   transform: translateY(-1px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
-.hint-button:active:not(:disabled) {
+.hint-button:active:not(:disabled),
+.reveal-button:active:not(:disabled) {
   transform: translateY(0);
 }
 
-.hint-button:disabled {
+.hint-button:disabled,
+.reveal-button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
