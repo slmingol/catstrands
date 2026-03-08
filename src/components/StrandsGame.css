@@ -168,6 +168,11 @@
   .victory-banner {
     width: 90%;
     max-width: 420px;
+    padding: 6px 12px;
+    margin: 0 auto;
+    height: auto;
+    min-height: 32px;
+    font-size: 1.1rem;
   }
 
   .found-words {
