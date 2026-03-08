@@ -169,7 +169,7 @@
 
   .hint-section {
     position: absolute;
-    top: 145px;
+    top: 420px;
     left: 50%;
     transform: translateX(-50%);
     z-index: 50;
