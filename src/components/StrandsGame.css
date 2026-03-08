@@ -113,6 +113,7 @@
     width: 100%;
     max-width: 420px;
     margin-left: 0;
+    order: 2;
   }
 
   .theme-section {
@@ -122,6 +123,7 @@
   .right-panel {
     width: 100%;
     margin-top: 0;
+    order: 1;
   }
 
   .victory-banner {
