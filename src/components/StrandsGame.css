@@ -167,16 +167,18 @@
     margin-top: 0;
   }
 
-  .hint-button {
-    min-width: 0;
-    width: 36px;
-    height: 36px;
-    padding: 0;
-    border-radius: 50%;
-    font-size: 1.2rem;
+  .hint-section {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: center;
+    margin-top: 20px;
+  }
+
+  .hint-button {
+    min-width: 160px;
+    padding: 10px 40px;
+    border-radius: 24px;
+    font-size: 1.3rem;
   }
 
   .hint-info {
