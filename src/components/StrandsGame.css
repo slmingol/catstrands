@@ -169,8 +169,9 @@
 
   .hint-section {
     position: fixed;
-    top: 60px;
-    right: 10px;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
     z-index: 100;
     width: auto;
     margin: 0;
