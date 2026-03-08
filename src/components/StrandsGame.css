@@ -168,14 +168,28 @@
   }
 
   .hint-section {
-    position: absolute;
-    top: 420px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 50;
-    width: calc(100% - 32px);
-    max-width: 420px;
+    position: fixed;
+    top: 60px;
+    right: 10px;
+    z-index: 100;
+    width: auto;
     margin: 0;
+  }
+
+  .hint-button {
+    min-width: 0;
+    width: 50px;
+    height: 50px;
+    padding: 0;
+    border-radius: 50%;
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .hint-info {
+    display: none;
   }
 }
 
