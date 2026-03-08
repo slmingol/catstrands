@@ -167,16 +167,6 @@
     margin-top: 0;
   }
 
-  .hint-section {
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 100;
-    width: auto;
-    margin: 0;
-  }
-
   .hint-button {
     min-width: 0;
     width: 36px;
