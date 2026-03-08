@@ -80,13 +80,12 @@ body {
 @media (max-width: 900px) {
   .app-header {
     margin-bottom: 0;
-    padding: 0 16px;
+    padding: 2px 16px 0;
   }
 
   .app-header h1 {
-    font-size: 1.3rem;
-    margin-bottom: -10px;
-    padding-top: 3px;
+    font-size: 1.4rem;
+    margin-bottom: -5px;
   }
 
   .subtitle {
@@ -94,7 +93,7 @@ body {
   }
 
   .puzzle-navigation {
-    margin-bottom: -10px;
+    margin-bottom: -5px;
     gap: 10px;
   }
 }
