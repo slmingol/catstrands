@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import './StrandsGame.css';
 import { recordGameCompletion, recordGameStart } from '../utils/statsManager';
 
@@ -20,6 +20,7 @@ function StrandsGame({ puzzle }) {
   const [earnedHints, setEarnedHints] = useState(0); // Number of hints earned but not used
   const [animatingCells, setAnimatingCells] = useState(new Set()); // Cells currently animating
   const [hintedCells, setHintedCells] = useState([]); // Cells that are part of a hint
+  const gridRef = useRef(null);
 
   // Check if game is won
   const isGameWon = foundWords.length === words.length + 1; // +1 for spangram
@@ -240,14 +241,25 @@ function StrandsGame({ puzzle }) {
 
   // Calculate the center position of a cell for drawing lines
   const getCellCenter = (index) => {
+    if (gridRef.current) {
+      const gridEl = gridRef.current;
+      const cells = gridEl.children;
+      if (cells[index]) {
+        const cellRect = cells[index].getBoundingClientRect();
+        const gridRect = gridEl.getBoundingClientRect();
+        return {
+          x: (cellRect.left - gridRect.left + cellRect.width / 2) / gridRect.width * 100,
+          y: (cellRect.top - gridRect.top + cellRect.height / 2) / gridRect.height * 100,
+        };
+      }
+    }
+    // Fallback calculation (used on first render before ref is attached)
     const row = Math.floor(index / cols);
     const col = index % cols;
-    // Account for cell size (44px) and gap (16px)
     const cellSize = 44;
     const gapSize = 16;
     const totalWidth = cols * cellSize + (cols - 1) * gapSize;
     const totalHeight = rows * cellSize + (rows - 1) * gapSize;
-    // Calculate center position including gaps
     const x = (col * (cellSize + gapSize) + cellSize / 2) / totalWidth * 100;
     const y = (row * (cellSize + gapSize) + cellSize / 2) / totalHeight * 100;
     return { x, y };
@@ -426,10 +438,11 @@ function StrandsGame({ puzzle }) {
         </svg>
 
         <div 
+          ref={gridRef}
           className="grid"
           style={{
             gridTemplateColumns: `repeat(${cols}, 1fr)`,
-            gridTemplateRows: `repeat(${rows}, 1fr)`
+            gridTemplateRows: `repeat(${rows}, auto)`
           }}
           onMouseLeave={() => {
             if (isSelecting) handleMouseUp();
