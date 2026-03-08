@@ -20,6 +20,7 @@ function StrandsGame({ puzzle }) {
   const [earnedHints, setEarnedHints] = useState(0); // Number of hints earned but not used
   const [animatingCells, setAnimatingCells] = useState(new Set()); // Cells currently animating
   const [hintedCells, setHintedCells] = useState([]); // Cells that are part of a hint
+  const [puzzleRevealed, setPuzzleRevealed] = useState(false); // Track if puzzle was revealed
   const gridRef = useRef(null);
 
   // Check if game is won
@@ -314,14 +315,15 @@ function StrandsGame({ puzzle }) {
     const allWordsUpper = allWords.map(w => w.toUpperCase());
     setFoundWords(allWordsUpper);
     setHintedCells([]);
+    setPuzzleRevealed(true);
     setMessage('🔍 All words revealed!');
   };
 
   return (
     <div className="strands-game">
       
-      <div className={`victory-banner ${!isGameWon ? 'victory-banner-hidden' : ''}`}>
-        {isGameWon && '🎉 Perfect! You found all words including the spangram!'}
+      <div className={`victory-banner ${!(isGameWon && !puzzleRevealed) ? 'victory-banner-hidden' : ''}`}>
+        {isGameWon && !puzzleRevealed && '🎉 Perfect! You found all words including the spangram!'}
       </div>
       
       <div className="game-content">
