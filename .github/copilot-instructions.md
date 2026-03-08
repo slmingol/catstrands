@@ -142,15 +142,23 @@ make logs
 
 ### Release Management
 
-**Version Bumping:**
+**Automatic Version Bumping (Recommended):**
+- **Every push to `main` automatically bumps the patch version** via GitHub Actions
+- The `.github/workflows/auto-version.yml` workflow detects if version was changed
+- If unchanged, it auto-bumps patch version, commits, and pushes tag
+- Prevents infinite loops by adding `[skip-version]` to commit message
+- To skip auto-bump, include `[skip-version]` in your commit message
+
+**Manual Version Bumping:**
 ```bash
-npm run release:patch  # 1.0.3 -> 1.0.4
-npm run release:minor  # 1.0.3 -> 1.1.0
-npm run release:major  # 1.0.3 -> 2.0.0
+npm run release:patch  # 1.0.3 -> 1.0.4 (recommended for bug fixes)
+npm run release:minor  # 1.0.3 -> 1.1.0 (use for new features)
+npm run release:major  # 1.0.3 -> 2.0.0 (use for breaking changes)
 ```
 - Increments version in package.json
 - Creates git tag
 - Pushes to remote with tags
+- When manually bumped, auto-version workflow will detect and skip
 
 **Manual Release Script:**
 ```bash
@@ -161,17 +169,26 @@ npm run release:major  # 1.0.3 -> 2.0.0
 
 ## Validation and CI/CD
 
-### GitHub Actions Workflow
+### GitHub Actions Workflows
 
-**File**: `.github/workflows/docker-build.yml`
+**Auto Version Bump** (`.github/workflows/auto-version.yml`):
+- **Trigger**: Every push to `main` branch
+- **What It Does**:
+  1. Checks if package.json version was changed in the commit
+  2. If not changed, automatically runs `npm version patch`
+  3. Commits with message "Bump version to X.Y.Z [skip-version]"
+  4. Pushes commit and tag to remote
+  5. This triggers the Docker build workflow
+- **Skip Behavior**: Add `[skip-version]` to commit message to prevent auto-bump
+- **Prevents Loops**: Auto-bump commits include `[skip-version]` to avoid triggering themselves
 
-**Triggers:**
-- Push to `main` branch
-- Tag creation (pattern: `v*`)
-- Pull requests to `main`
-- Manual dispatch
-
-**What It Does:**
+**Docker Build** (`.github/workflows/docker-build.yml`):
+- **Triggers**:
+  - Push to `main` branch
+  - Tag creation (pattern: `v*`)
+  - Pull requests to `main`
+  - Manual dispatch
+- **What It Does**:
 1. Builds multi-platform Docker image (linux/amd64, linux/arm64)
 2. Pushes to `ghcr.io/slmingol/catstrands` with tags:
    - `latest` (main branch only)
@@ -211,6 +228,7 @@ Before submitting changes:
 catstrands/
 ├── .github/
 │   └── workflows/
+│       ├── auto-version.yml       # Auto-bump version on push to main
 │       └── docker-build.yml       # CI/CD pipeline for Docker builds
 ├── docker/
 │   ├── Dockerfile                 # Multi-stage build (Node 20-alpine + nginx)

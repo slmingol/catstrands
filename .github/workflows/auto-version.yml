@@ -1,0 +1,77 @@
+name: Auto Version Bump
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  auto-version:
+    runs-on: ubuntu-latest
+    # Skip if commit message contains [skip-version] or if it's already a version bump
+    if: "!contains(github.event.head_commit.message, '[skip-version]') && !contains(github.event.head_commit.message, 'Bump version to')"
+    
+    permissions:
+      contents: write
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Check if version was changed
+        id: check-version
+        run: |
+          # Get the version from current commit
+          CURRENT_VERSION=$(node -p "require('./package.json').version")
+          
+          # Get the version from previous commit
+          git checkout HEAD~1 -- package.json
+          PREVIOUS_VERSION=$(node -p "require('./package.json').version")
+          
+          # Restore current package.json
+          git checkout HEAD -- package.json
+          
+          echo "Current version: $CURRENT_VERSION"
+          echo "Previous version: $PREVIOUS_VERSION"
+          
+          if [ "$CURRENT_VERSION" != "$PREVIOUS_VERSION" ]; then
+            echo "version_changed=true" >> $GITHUB_OUTPUT
+            echo "✅ Version was already bumped to $CURRENT_VERSION"
+          else
+            echo "version_changed=false" >> $GITHUB_OUTPUT
+            echo "⚠️ Version not changed, will auto-bump"
+          fi
+
+      - name: Auto-bump version
+        if: steps.check-version.outputs.version_changed == 'false'
+        run: |
+          # Bump patch version
+          npm version patch -m "Bump version to %s [skip-version]"
+          
+          # Get new version
+          NEW_VERSION=$(node -p "require('./package.json').version")
+          echo "📦 Bumped to version $NEW_VERSION"
+          
+          # Push changes and tags
+          git push
+          git push --tags
+          
+          echo "✅ Version $NEW_VERSION pushed successfully"
+
+      - name: Version already bumped
+        if: steps.check-version.outputs.version_changed == 'true'
+        run: |
+          echo "ℹ️ Version was already updated in this push, skipping auto-bump"
