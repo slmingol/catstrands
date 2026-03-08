@@ -123,6 +123,7 @@ body {
 
   .cache-info-bar {
     font-size: 0.75rem;
+    margin-bottom: 5px;
   }
 
   .cache-info-left {
