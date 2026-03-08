@@ -164,6 +164,7 @@
 
   .found-words {
     margin-top: 0;
+    display: none;
   }
 
   .hint-section {
