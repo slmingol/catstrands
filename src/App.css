@@ -93,20 +93,10 @@ body {
 }
 
 .cache-info-left {
-  flex: 2;
+  flex: 1;
   padding: 10px 2.5vw;
   background: #e8f5e9;
   color: #2e7d32;
-  min-width: 0;
-  overflow: hidden;
-}
-
-.cache-info-right {
-  flex: 1;
-  padding: 10px 2.5vw;
-  background: #e3f2fd;
-  color: #1976d2;
-  text-align: right;
   min-width: 0;
   overflow: hidden;
 }
@@ -135,8 +125,7 @@ body {
     font-size: 0.75rem;
   }
 
-  .cache-info-left,
-  .cache-info-right {
+  .cache-info-left {
     padding: 8px 2vw;
     white-space: nowrap;
     overflow: hidden;

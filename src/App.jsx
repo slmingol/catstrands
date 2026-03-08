@@ -524,7 +524,6 @@ function App() {
 
       {(caching || (useNYT && cacheMetadata?.puzzleCount > 0)) && (
         <div className="cache-info-bar">
-          {/* Left: Cached info */}
           <div className="cache-info-left">
             {useNYT && cacheMetadata?.puzzleCount > 0 && (
               <>
@@ -534,16 +533,11 @@ function App() {
                 )}
               </>
             )}
-          </div>
-          
-          {/* Right: Downloading info */}
-          <div className="cache-info-right">
-            {caching ? (
+            {caching && (
               <>
+                {useNYT && cacheMetadata?.puzzleCount > 0 && <> • </>}
                 ⬇️ Downloading {cacheProgress.current}/{cacheProgress.total}: {cacheProgress.date}
               </>
-            ) : (
-              <>&nbsp;</>
             )}
           </div>
         </div>
