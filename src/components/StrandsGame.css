@@ -588,9 +588,8 @@
   }
 
   .grid-container {
-    width: 100%;
-    margin-top: 0;
-    margin-bottom: 0;
+    width: 80%;
+    margin: 0 auto;
     padding: 0;
   }
 
@@ -605,7 +604,7 @@
     width: auto;
     height: auto;
     aspect-ratio: 1 / 1;
-    font-size: min(32px, 8vw); /* 8vw ≈ 32px on 400px screens, scales down on smaller devices */
+    font-size: min(22px, 5.5vw); /* smaller font to match NYT proportions with 80% grid width */
   }
 
   .victory-banner {
