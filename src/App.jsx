@@ -5,6 +5,7 @@ import StatsModal from './components/StatsModal';
 import SettingsModal from './components/SettingsModal';
 import PuzzleArchiveModal from './components/PuzzleArchiveModal';
 import puzzles from './data/puzzles';
+import packageJson from '../package.json';
 import { 
   fetchPuzzleWithCache, 
   fetchAndCacheRecentPuzzles, 
@@ -565,6 +566,10 @@ function App() {
         onDownload={downloadSelectedPuzzles}
         daysBack={availableDays}
       />
+
+      <div className="version-display">
+        v{packageJson.version}
+      </div>
     </div>
   );
 }
