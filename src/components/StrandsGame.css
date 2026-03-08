@@ -90,26 +90,27 @@
   .strands-game {
     padding: 0 16px 10px 16px;
     overflow-x: hidden;
+    margin-top: -10px;
   }
 
   .date-stats-row {
     width: 100%;
     margin-left: 0;
     margin-right: 0;
-    padding: 5px 8px;
-    margin-bottom: -8px;
+    padding: 3px 8px;
+    margin-bottom: -10px;
   }
 
   .date-display {
-    font-size: 1.3rem;
+    font-size: 1.2rem;
   }
 
   .game-content {
     flex-direction: column;
     align-items: center;
-    gap: 4px;
+    gap: 2px;
     margin-left: 0;
-    margin-top: -15px;
+    margin-top: -18px;
   }
 
   .left-panel {
@@ -128,14 +129,14 @@
 
   .right-panel {
     width: 100%;
-    margin-top: -15px;
+    margin-top: -20px;
     order: 1;
   }
 
   .current-word {
     min-height: 0;
     margin-bottom: 0;
-    padding: 2px 0;
+    padding: 0;
   }
 
   .word-display {
