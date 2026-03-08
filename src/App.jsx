@@ -539,7 +539,7 @@ function App() {
         }}>
           {/* Left: Cached info */}
           <div style={{ 
-            flex: '1 1 50%',
+            flex: '2',
             padding: '10px 2.5vw',
             background: '#e8f5e9',
             color: '#2e7d32',
@@ -557,7 +557,7 @@ function App() {
           
           {/* Right: Downloading info */}
           <div style={{ 
-            flex: '1 1 50%',
+            flex: '1',
             padding: '10px 2.5vw',
             background: '#e3f2fd',
             color: '#1976d2',
