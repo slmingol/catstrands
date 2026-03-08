@@ -77,6 +77,40 @@ body {
   font-weight: 500;
 }
 
+.cache-info-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 95vw;
+  margin-left: calc(-47.5vw + 50%);
+  margin-right: calc(-47.5vw + 50%);
+  margin-bottom: 0;
+  padding: 0;
+  background: transparent;
+  font-size: 0.9rem;
+  font-weight: 500;
+  box-sizing: border-box;
+}
+
+.cache-info-left {
+  flex: 2;
+  padding: 10px 2.5vw;
+  background: #e8f5e9;
+  color: #2e7d32;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.cache-info-right {
+  flex: 1;
+  padding: 10px 2.5vw;
+  background: #e3f2fd;
+  color: #1976d2;
+  text-align: right;
+  min-width: 0;
+  overflow: hidden;
+}
+
 @media (max-width: 900px) {
   .app-header {
     margin-bottom: 0;
@@ -95,5 +129,17 @@ body {
   .puzzle-navigation {
     margin-bottom: -5px;
     gap: 10px;
+  }
+
+  .cache-info-bar {
+    font-size: 0.75rem;
+  }
+
+  .cache-info-left,
+  .cache-info-right {
+    padding: 8px 2vw;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 }

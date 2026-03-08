@@ -523,28 +523,9 @@ function App() {
       </div>
 
       {(caching || (useNYT && cacheMetadata?.puzzleCount > 0)) && (
-        <div style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          width: '95vw',
-          marginLeft: 'calc(-47.5vw + 50%)',
-          marginRight: 'calc(-47.5vw + 50%)',
-          marginBottom: '0',
-          padding: '0',
-          background: 'transparent',
-          fontSize: '0.9rem',
-          fontWeight: '500',
-          boxSizing: 'border-box'
-        }}>
+        <div className="cache-info-bar">
           {/* Left: Cached info */}
-          <div style={{ 
-            flex: '2',
-            padding: '10px 2.5vw',
-            background: '#e8f5e9',
-            color: '#2e7d32',
-            minWidth: 0
-          }}>
+          <div className="cache-info-left">
             {useNYT && cacheMetadata?.puzzleCount > 0 && (
               <>
                 💾 {cacheMetadata.puzzleCount} puzzles cached
@@ -556,14 +537,7 @@ function App() {
           </div>
           
           {/* Right: Downloading info */}
-          <div style={{ 
-            flex: '1',
-            padding: '10px 2.5vw',
-            background: '#e3f2fd',
-            color: '#1976d2',
-            textAlign: 'right',
-            minWidth: 0
-          }}>
+          <div className="cache-info-right">
             {caching ? (
               <>
                 ⬇️ Downloading {cacheProgress.current}/{cacheProgress.total}: {cacheProgress.date}
