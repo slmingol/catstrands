@@ -90,27 +90,27 @@
   .strands-game {
     padding: 0 16px 10px 16px;
     overflow-x: hidden;
-    margin-top: -10px;
+    margin-top: -15px;
   }
 
   .date-stats-row {
     width: 100%;
     margin-left: 0;
     margin-right: 0;
-    padding: 3px 8px;
-    margin-bottom: -10px;
+    padding: 2px 8px;
+    margin-bottom: -15px;
   }
 
   .date-display {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
   }
 
   .game-content {
     flex-direction: column;
     align-items: center;
-    gap: 2px;
+    gap: 0;
     margin-left: 0;
-    margin-top: -18px;
+    margin-top: -25px;
   }
 
   .left-panel {
@@ -129,7 +129,7 @@
 
   .right-panel {
     width: 100%;
-    margin-top: -20px;
+    margin-top: -30px;
     order: 1;
   }
 
@@ -146,7 +146,11 @@
   .message-container {
     min-height: 0;
     margin-bottom: 0;
-    padding: 5px 0;
+    padding: 0;
+  }
+
+  .grid-container {
+    margin-top: -10px;
   }
 
   .victory-banner {
