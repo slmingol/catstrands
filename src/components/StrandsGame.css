@@ -164,11 +164,18 @@
 
   .found-words {
     margin-top: 0;
-    display: none;
   }
 
   .hint-section {
-    margin-top: -155px;
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   }
 }
 
