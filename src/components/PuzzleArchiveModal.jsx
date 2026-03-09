@@ -7,9 +7,15 @@ const STRANDS_LAUNCH_DATE = new Date('2024-03-04');
 
 // Modal for browsing and selectively downloading NYT Strands puzzles
 // daysBack is dynamically calculated based on Strands launch date (March 4, 2024)
-function PuzzleArchiveModal({ isOpen, onClose, onDownload, daysBack = 365 }) {
+function PuzzleArchiveModal({ isOpen, onClose, onDownload, onPlayPuzzle, daysBack = 365 }) {
   const [selected, setSelected] = useState(new Set());
   const [filter, setFilter] = useState('all'); // 'all', 'cached', 'uncached'
+
+  // Handle playing a puzzle
+  const handlePlayPuzzle = (dateStr) => {
+    onPlayPuzzle(dateStr);
+    onClose();
+  };
 
   // Generate puzzle list (memoized to avoid recalculation)
   const puzzles = useMemo(() => {
@@ -142,20 +148,35 @@ function PuzzleArchiveModal({ isOpen, onClose, onDownload, daysBack = 365 }) {
             <div 
               key={puzzle.date} 
               className={`puzzle-item ${puzzle.cached ? 'cached' : ''} ${selected.has(puzzle.date) ? 'selected' : ''}`}
-              onClick={() => toggleSelect(puzzle.date)}
             >
-              <input 
-                type="checkbox" 
-                checked={selected.has(puzzle.date)}
-                onChange={() => toggleSelect(puzzle.date)}
-              />
-              <div className="puzzle-info">
-                <div className="puzzle-date">{puzzle.displayDate}</div>
-                <div className="puzzle-theme">
-                  {puzzle.theme ? `"${puzzle.theme}"` : puzzle.cached ? '(Theme available)' : '(Not downloaded)'}
+              <div onClick={() => toggleSelect(puzzle.date)} style={{ display: 'flex', alignItems: 'center', flex: 1, cursor: 'pointer' }}>
+                <input 
+                  type="checkbox" 
+                  checked={selected.has(puzzle.date)}
+                  onChange={() => toggleSelect(puzzle.date)}
+                />
+                <div className="puzzle-info">
+                  <div className="puzzle-date">{puzzle.displayDate}</div>
+                  <div className="puzzle-theme">
+                    {puzzle.theme ? `"${puzzle.theme}"` : puzzle.cached ? '(Theme available)' : '(Not downloaded)'}
+                  </div>
                 </div>
               </div>
-              {puzzle.cached && <span className="cached-badge">✓ Cached</span>}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                {puzzle.cached && (
+                  <button 
+                    className="play-puzzle-button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handlePlayPuzzle(puzzle.date);
+                    }}
+                    title="Play this puzzle"
+                  >
+                    ▶ Play
+                  </button>
+                )}
+                {puzzle.cached && <span className="cached-badge">✓ Cached</span>}
+              </div>
             </div>
           ))}
         </div>

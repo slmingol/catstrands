@@ -209,6 +209,32 @@
   flex-shrink: 0;
 }
 
+.play-puzzle-button {
+  font-size: 0.85rem;
+  background: #1976d2;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.play-puzzle-button:hover {
+  background: #1565c0;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.play-puzzle-button:active {
+  transform: translateY(0);
+}
+
 .modal-footer {
   display: flex;
   gap: 12px;

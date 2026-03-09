@@ -47,6 +47,7 @@ const getDaysSinceLaunch = () => {
 
 function App() {
   const [currentPuzzle, setCurrentPuzzle] = useState(null);
+  const [currentPuzzleDate, setCurrentPuzzleDate] = useState(null); // Track current puzzle date
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [useNYT, setUseNYT] = useState(true);
@@ -173,6 +174,63 @@ function App() {
     return puzzles[puzzleIndex];
   };
 
+  // Load puzzle by date
+  const loadPuzzleByDate = async (dateStr) => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const nytPuzzle = await fetchPuzzleWithCache(dateStr, true);
+      setCurrentPuzzle(nytPuzzle);
+      setCurrentPuzzleDate(dateStr);
+      setCustomPuzzle(null);
+    } catch (err) {
+      console.error('Failed to fetch puzzle for date:', dateStr, err);
+      setError(`Could not load puzzle for ${dateStr}. Try downloading it from the archive first.`);
+    }
+
+    setLoading(false);
+  };
+
+  // Navigate to previous day's puzzle
+  const goToPreviousPuzzle = async () => {
+    if (!currentPuzzleDate) return;
+    
+    const currentDate = new Date(currentPuzzleDate);
+    const prevDate = new Date(currentDate);
+    prevDate.setDate(prevDate.getDate() - 1);
+    
+    // Don't go before launch date
+    if (prevDate < STRANDS_LAUNCH_DATE) {
+      setError('No puzzles available before March 4, 2024');
+      return;
+    }
+    
+    const prevDateStr = prevDate.toISOString().split('T')[0];
+    await loadPuzzleByDate(prevDateStr);
+  };
+
+  // Navigate to next day's puzzle
+  const goToNextPuzzle = async () => {
+    if (!currentPuzzleDate) return;
+    
+    const currentDate = new Date(currentPuzzleDate);
+    const nextDate = new Date(currentDate);
+    nextDate.setDate(nextDate.getDate() + 1);
+    
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    // Don't go beyond today
+    if (nextDate > today) {
+      setError('No future puzzles available');
+      return;
+    }
+    
+    const nextDateStr = nextDate.toISOString().split('T')[0];
+    await loadPuzzleByDate(nextDateStr);
+  };
+
   // Load puzzle on mount
   useEffect(() => {
     const loadPuzzle = async () => {
@@ -184,13 +242,16 @@ function App() {
           const today = new Date().toISOString().split('T')[0];
           const nytPuzzle = await fetchPuzzleWithCache(today, true);
           setCurrentPuzzle(nytPuzzle);
+          setCurrentPuzzleDate(today);
         } catch (err) {
           console.error('Failed to fetch NYT puzzle, using local:', err);
           setError('Could not fetch today\'s NYT puzzle, using local puzzle instead');
           setCurrentPuzzle(getLocalPuzzle());
+          setCurrentPuzzleDate(null);
         }
       } else {
         setCurrentPuzzle(getLocalPuzzle());
+        setCurrentPuzzleDate(null);
       }
 
       setLoading(false);
@@ -437,6 +498,38 @@ function App() {
     cacheFileInputRef.current?.click();
   };
 
+  // Format the date for display
+  const getDisplayDate = () => {
+    if (currentPuzzleDate) {
+      const date = new Date(currentPuzzleDate + 'T00:00:00'); // Ensure it's treated as local time
+      const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+      return date.toLocaleDateString('en-US', options);
+    }
+    // Fallback to today for local puzzles
+    const today = new Date();
+    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    return today.toLocaleDateString('en-US', options);
+  };
+
+  // Check if we can navigate to previous/next puzzles
+  const canGoPrevious = () => {
+    if (!currentPuzzleDate || !useNYT) return false;
+    const currentDate = new Date(currentPuzzleDate);
+    const prevDate = new Date(currentDate);
+    prevDate.setDate(prevDate.getDate() - 1);
+    return prevDate >= STRANDS_LAUNCH_DATE;
+  };
+
+  const canGoNext = () => {
+    if (!currentPuzzleDate || !useNYT) return false;
+    const currentDate = new Date(currentPuzzleDate);
+    const nextDate = new Date(currentDate);
+    nextDate.setDate(nextDate.getDate() + 1);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return nextDate <= today;
+  };
+
   // Format today's date
   const getTodaysDate = () => {
     const today = new Date();
@@ -502,9 +595,29 @@ function App() {
       </header>
 
       <div className="date-stats-row">
+        {useNYT && currentPuzzleDate && (
+          <button 
+            className="nav-button nav-prev"
+            onClick={goToPreviousPuzzle}
+            disabled={!canGoPrevious()}
+            title="Previous puzzle"
+          >
+            ◀
+          </button>
+        )}
         <div className="date-display">
-          {getTodaysDate()}
+          {getDisplayDate()}
         </div>
+        {useNYT && currentPuzzleDate && (
+          <button 
+            className="nav-button nav-next"
+            onClick={goToNextPuzzle}
+            disabled={!canGoNext()}
+            title="Next puzzle"
+          >
+            ▶
+          </button>
+        )}
         <div style={{ display: 'flex', gap: '8px' }}>
           <button 
             className="stats-button"
@@ -564,6 +677,7 @@ function App() {
         isOpen={showArchiveModal}
         onClose={() => setShowArchiveModal(false)}
         onDownload={downloadSelectedPuzzles}
+        onPlayPuzzle={loadPuzzleByDate}
         daysBack={availableDays}
       />
 
