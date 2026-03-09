@@ -231,6 +231,19 @@ function App() {
     await loadPuzzleByDate(nextDateStr);
   };
 
+  // Go to today's puzzle
+  const goToToday = async () => {
+    const today = new Date().toISOString().split('T')[0];
+    await loadPuzzleByDate(today);
+  };
+
+  // Check if we're viewing today's puzzle
+  const isViewingToday = () => {
+    if (!currentPuzzleDate) return false;
+    const today = new Date().toISOString().split('T')[0];
+    return currentPuzzleDate === today;
+  };
+
   // Load puzzle on mount
   useEffect(() => {
     const loadPuzzle = async () => {
@@ -619,6 +632,15 @@ function App() {
           </button>
         )}
         <div style={{ display: 'flex', gap: '8px' }}>
+          {useNYT && currentPuzzleDate && !isViewingToday() && (
+            <button 
+              className="stats-button today-button"
+              onClick={goToToday}
+              title="Go to today's puzzle"
+            >
+              📅
+            </button>
+          )}
           <button 
             className="stats-button"
             onClick={() => setShowStatsModal(true)}
@@ -670,7 +692,7 @@ function App() {
       )}
 
       {currentPuzzle && (
-        <StrandsGame puzzle={currentPuzzle} />
+        <StrandsGame puzzle={currentPuzzle} puzzleDate={currentPuzzleDate} />
       )}
 
       <PuzzleArchiveModal

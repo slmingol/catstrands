@@ -1,8 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
 import './StrandsGame.css';
 import { recordGameCompletion, recordGameStart } from '../utils/statsManager';
+import { saveGameState, loadGameState } from '../utils/gameStateManager';
 
-function StrandsGame({ puzzle }) {
+function StrandsGame({ puzzle, puzzleDate }) {
   const { grid, words, spangram, theme, rows, cols } = puzzle;
   
   const [selectedCells, setSelectedCells] = useState([]);
@@ -50,6 +51,84 @@ function StrandsGame({ puzzle }) {
       return () => clearTimeout(timer);
     }
   }, [message]);
+
+  // Load saved game state when puzzle changes
+  useEffect(() => {
+    const savedState = loadGameState(puzzle, puzzleDate);
+    
+    if (savedState) {
+      // Restore all saved state
+      setFoundWords(savedState.foundWords || []);
+      setFoundWordPaths(savedState.foundWordPaths || []);
+      setUsedCells(savedState.usedCells || new Set());
+      setHintsUsed(savedState.hintsUsed || 0);
+      setRevealedHints(savedState.revealedHints || []);
+      setNonSolutionWords(savedState.nonSolutionWords || []);
+      setHintProgress(savedState.hintProgress || 0);
+      setEarnedHints(savedState.earnedHints || 0);
+      setHintedCells(savedState.hintedCells || []);
+      setPuzzleRevealed(savedState.puzzleRevealed || false);
+      setStatsRecorded(savedState.statsRecorded || false);
+      
+      console.log('📂 Loaded saved game state');
+    } else {
+      // Reset state for new puzzle
+      setFoundWords([]);
+      setFoundWordPaths([]);
+      setUsedCells(new Set());
+      setHintsUsed(0);
+      setRevealedHints([]);
+      setNonSolutionWords([]);
+      setHintProgress(0);
+      setEarnedHints(0);
+      setHintedCells([]);
+      setPuzzleRevealed(false);
+      setStatsRecorded(false);
+    }
+  }, [puzzle, puzzleDate]); // Re-run when puzzle changes
+
+  // Auto-save game state whenever relevant variables change
+  useEffect(() => {
+    // Don't save on initial render (state is being loaded)
+    if (foundWords.length === 0 && 
+        hintsUsed === 0 && 
+        hintProgress === 0 && 
+        earnedHints === 0 && 
+        nonSolutionWords.length === 0 &&
+        !puzzleRevealed) {
+      return; // Skip saving empty initial state
+    }
+
+    const stateToSave = {
+      foundWords,
+      foundWordPaths,
+      usedCells,
+      hintsUsed,
+      revealedHints,
+      nonSolutionWords,
+      hintProgress,
+      earnedHints,
+      hintedCells,
+      puzzleRevealed,
+      statsRecorded
+    };
+
+    saveGameState(puzzle, puzzleDate, stateToSave);
+  }, [
+    foundWords,
+    foundWordPaths,
+    usedCells,
+    hintsUsed,
+    revealedHints,
+    nonSolutionWords,
+    hintProgress,
+    earnedHints,
+    hintedCells,
+    puzzleRevealed,
+    statsRecorded,
+    puzzle,
+    puzzleDate
+  ]);
 
 
   const getRowCol = (index) => [Math.floor(index / cols), index % cols];
@@ -353,6 +432,11 @@ function StrandsGame({ puzzle }) {
             className="hint-button"
             onClick={handleHint}
             disabled={isGameWon || earnedHints === 0}
+            style={{
+              background: earnedHints === 0 
+                ? `linear-gradient(to top, #ddd6cc ${(hintProgress / 3) * 100}%, white ${(hintProgress / 3) * 100}%)`
+                : 'white'
+            }}
           >
             💡 Hint {earnedHints > 0 && `(${earnedHints})`}
           </button>

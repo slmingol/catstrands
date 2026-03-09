@@ -64,6 +64,17 @@
   transform: translateY(0);
 }
 
+.today-button {
+  background: #e3f2fd !important;
+  border-color: #90caf9 !important;
+  color: #1976d2 !important;
+}
+
+.today-button:hover {
+  background: #bbdefb !important;
+  border-color: #64b5f6 !important;
+}
+
 .nav-button {
   background: white;
   border: 2px solid #e5e5e5;
@@ -474,7 +485,7 @@
   font-size: 1.45rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.2s, background 0.4s ease;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   min-width: 192px;
 }
