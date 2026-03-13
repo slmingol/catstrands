@@ -13,7 +13,7 @@ CatStrands is a React-based web application that clones the New York Times Stran
 - **Build Tool**: Vite 7.3.1  
 - **Backend**: Express.js 4.18.2 with CORS support
 - **Runtime**: Node.js 20+ (Docker uses Node 20-alpine, local development tested with Node 25.6.1)
-- **Container Support**: Docker with multi-stage builds, docker-compose configurations
+- **Container Support**: Docker with multi-stage builds, podman compose configurations
 - **CI/CD**: GitHub Actions for automated Docker image builds and publishing to GHCR
 
 ## Build and Development Instructions
@@ -88,13 +88,13 @@ npm run lint
 
 **Build and runtime are NOT affected by these lint warnings.** The project successfully builds and runs despite these errors. Only address if specifically tasked with fixing lint issues.
 
-### Docker Development
+### Podman Development
 
 **Quick Start (Pre-built Image):**
 ```bash
 make simple
 # or
-docker-compose -f docker-compose.simple.yml up -d
+podman compose -f docker-compose.simple.yml up -d
 ```
 - Pulls `ghcr.io/slmingol/catstrands:latest` from GitHub Container Registry
 - Available at http://localhost:3000 (frontend) and http://localhost:3001 (API)
@@ -104,7 +104,7 @@ docker-compose -f docker-compose.simple.yml up -d
 ```bash
 make dev
 # or  
-docker-compose --profile dev up
+podman compose --profile dev up
 ```
 - Mounts local source code as volume
 - Frontend: http://localhost:5173
@@ -115,7 +115,7 @@ docker-compose --profile dev up
 ```bash
 make prod
 # or
-docker-compose --profile prod up -d
+podman compose --profile prod up -d
 ```
 - Builds multi-stage Docker image using `docker/Dockerfile`
 - Frontend: http://localhost:8080, API: http://localhost:3001
@@ -377,7 +377,7 @@ vite.config.js             # Vite build config
 **Solution**: Stop conflicting service or use different port by modifying docker-compose.yml
 
 **Problem**: Changes not reflecting in Docker dev mode  
-**Solution**: Ensure volumes are correctly mounted. Run `docker-compose down -v && docker-compose --profile dev up` to restart fresh.
+**Solution**: Ensure volumes are correctly mounted. Run `podman compose down -v && podman compose --profile dev up` to restart fresh.
 
 ### Running Multiple Modes
 
