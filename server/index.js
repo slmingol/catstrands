@@ -16,6 +16,12 @@ const PORT = process.env.PORT || 3001;
 const CACHE_FILE = process.env.CACHE_FILE || path.join(__dirname, '../data/cache-backup.json');
 const MAX_BACKUPS = 5;
 
+// NYT Strands API base URL
+const NYT_API_BASE = 'https://www.nytimes.com/svc/strands/v2';
+
+// In-memory puzzle cache (populated from file on startup)
+let puzzleCache = {};
+
 // Middleware
 app.use(cors());
 app.use(express.json({ limit: '50mb' }));
@@ -23,6 +29,120 @@ app.use(express.json({ limit: '50mb' }));
 // Ensure data directory exists
 const dataDir = path.dirname(CACHE_FILE);
 await fs.mkdir(dataDir, { recursive: true }).catch(() => {});
+
+// Puzzle cache lives alongside the main cache file
+const PUZZLE_CACHE_FILE = path.join(dataDir, 'puzzle-cache.json');
+
+// ============= SERVER-SIDE PUZZLE CACHE =============
+
+// Timeout for NYT API requests (10 seconds)
+const NYT_FETCH_TIMEOUT_MS = 10000;
+
+/**
+ * Convert NYT puzzle format to game format (mirrors client-side logic)
+ */
+function convertNYTFormat(nytData) {
+  const { startingBoard, clue, spangram, themeWords } = nytData;
+  if (!Array.isArray(startingBoard) || !clue || !spangram || !Array.isArray(themeWords)) {
+    throw new Error('Invalid NYT puzzle format: missing required fields');
+  }
+  const grid = startingBoard.flatMap(row => row.split(''));
+  return {
+    rows: 8,
+    cols: 6,
+    theme: clue,
+    spangram,
+    grid,
+    words: themeWords,
+    _coords: {
+      theme: nytData.themeCoords,
+      spangram: nytData.spangramCoords
+    }
+  };
+}
+
+/**
+ * Load puzzle cache from disk into memory
+ */
+async function loadPuzzleCache() {
+  try {
+    await fs.access(PUZZLE_CACHE_FILE);
+    const data = await fs.readFile(PUZZLE_CACHE_FILE, 'utf-8');
+    puzzleCache = JSON.parse(data);
+    console.log(`📚 Loaded ${Object.keys(puzzleCache).length} puzzle(s) from server cache`);
+  } catch {
+    puzzleCache = {};
+    console.log('📚 Starting with empty puzzle cache');
+  }
+}
+
+// Debounced cache write to avoid excessive disk I/O
+let saveCacheTimeout = null;
+function scheduleSavePuzzleCache() {
+  if (saveCacheTimeout) clearTimeout(saveCacheTimeout);
+  saveCacheTimeout = setTimeout(() => {
+    fs.writeFile(PUZZLE_CACHE_FILE, JSON.stringify(puzzleCache), 'utf-8')
+      .then(() => console.log(`💾 Puzzle cache saved (${Object.keys(puzzleCache).length} entries)`))
+      .catch(err => console.error('Failed to save puzzle cache:', err));
+  }, 2000);
+}
+
+/**
+ * Fetch a puzzle directly from NYT API (no CORS proxy needed server-side)
+ */
+async function fetchNYTPuzzleServer(date) {
+  const url = `${NYT_API_BASE}/${date}.json`;
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), NYT_FETCH_TIMEOUT_MS);
+  try {
+    const response = await fetch(url, { signal: controller.signal });
+    if (!response.ok) {
+      const err = new Error(`HTTP ${response.status}`);
+      err.status = response.status;
+      throw err;
+    }
+    return convertNYTFormat(await response.json());
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
+/**
+ * Pre-fetch today's puzzle into the server cache (runs on startup and at midnight)
+ */
+async function prefetchTodaysPuzzle() {
+  const today = new Date().toISOString().split('T')[0];
+  if (puzzleCache[today]) {
+    console.log(`✅ Today's puzzle (${today}) already in server cache`);
+    return;
+  }
+  try {
+    console.log(`🔄 Pre-fetching today's puzzle: ${today}`);
+    const puzzle = await fetchNYTPuzzleServer(today);
+    puzzleCache[today] = puzzle;
+    scheduleSavePuzzleCache();
+    console.log(`✅ Today's puzzle (${today}) cached on server`);
+  } catch (err) {
+    console.error(`❌ Failed to pre-fetch today's puzzle (${today}):`, err.message);
+  }
+}
+
+/**
+ * Schedule the next midnight pre-fetch (re-schedules itself each day)
+ */
+function scheduleMidnightPrefetch() {
+  const now = new Date();
+  const nextMidnight = new Date();
+  // 5 minutes past midnight to allow NYT to publish
+  nextMidnight.setHours(24, 5, 0, 0);
+  const msUntilMidnight = nextMidnight - now;
+  setTimeout(() => {
+    prefetchTodaysPuzzle().catch(console.error);
+    scheduleMidnightPrefetch();
+  }, msUntilMidnight);
+  const minutesUntil = Math.round(msUntilMidnight / 60000);
+  console.log(`⏰ Next puzzle pre-fetch scheduled in ${minutesUntil} minute(s)`);
+}
 
 // Helper function to get backup file path by version
 function getBackupPath(version) {
@@ -77,6 +197,35 @@ async function rotateBackups() {
 // Health check
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
+// Serve a puzzle by date (shared server-side cache, no CORS proxy needed)
+app.get('/api/puzzles/:date', async (req, res) => {
+  const { date } = req.params;
+
+  // Validate date format (YYYY-MM-DD)
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+    return res.status(400).json({ error: 'Invalid date format. Use YYYY-MM-DD' });
+  }
+
+  // Return from cache if available
+  if (puzzleCache[date]) {
+    return res.json({ success: true, puzzle: puzzleCache[date], source: 'cache' });
+  }
+
+  // Fetch from NYT, cache, and return
+  try {
+    const puzzle = await fetchNYTPuzzleServer(date);
+    puzzleCache[date] = puzzle;
+    scheduleSavePuzzleCache();
+    return res.json({ success: true, puzzle, source: 'nyt' });
+  } catch (err) {
+    if (err.status === 404) {
+      return res.status(404).json({ error: 'Puzzle not found', date });
+    }
+    console.error(`Error fetching puzzle for ${date}:`, err.message);
+    return res.status(502).json({ error: 'Failed to fetch puzzle from NYT', details: err.message });
+  }
 });
 
 // Backup cache to filesystem
@@ -242,5 +391,13 @@ app.listen(PORT, () => {
   console.log('='.repeat(60));
   console.log(`   Server running on port ${PORT}`);
   console.log(`   Cache file: ${CACHE_FILE}`);
+  console.log(`   Puzzle cache: ${PUZZLE_CACHE_FILE}`);
   console.log('='.repeat(60) + '\n');
 });
+
+// Load puzzle cache from disk, then pre-fetch today's puzzle
+await loadPuzzleCache();
+await prefetchTodaysPuzzle();
+
+// Schedule daily pre-fetch at midnight + 5 min so new puzzles are ready immediately
+scheduleMidnightPrefetch();

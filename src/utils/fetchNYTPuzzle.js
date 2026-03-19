@@ -2,6 +2,11 @@
 // Fetches from: https://www.nytimes.com/svc/strands/v2/{date}.json
 // Uses CORS proxy (api.allorigins.win) to bypass browser restrictions
 
+// In production (container), API is proxied through nginx at /api
+// In development, API runs on localhost:3001
+const API_BASE = import.meta.env.VITE_API_URL ||
+  (import.meta.env.PROD ? '' : 'http://localhost:3001');
+
 /**
  * Fetch NYT Strands puzzle by date with retry logic
  * @param {string} date - Date in YYYY-MM-DD format
@@ -241,6 +246,27 @@ export function clearCache() {
 }
 
 /**
+ * Fetch puzzle from the shared server-side cache.
+ * Returns null if the server is unreachable or the puzzle is not yet cached there.
+ * @param {string} date - Date in YYYY-MM-DD format
+ * @returns {Promise<Object|null>} Puzzle data or null
+ */
+async function fetchPuzzleFromServer(date) {
+  try {
+    const response = await fetch(`${API_BASE}/api/puzzles/${date}`);
+    if (!response.ok) return null;
+    const result = await response.json();
+    return result.puzzle || null;
+  } catch (err) {
+    // Server unavailable – fall back to direct NYT fetch
+    if (import.meta.env.DEV) {
+      console.debug(`Server puzzle fetch unavailable for ${date}:`, err.message);
+    }
+    return null;
+  }
+}
+
+/**
  * Fetch puzzle with cache support
  * @param {string} date - Date in YYYY-MM-DD format
  * @param {boolean} useCache - Whether to use cache (default: true)
@@ -255,6 +281,15 @@ export async function fetchPuzzleWithCache(date, useCache = true) {
     }
   }
 
+  // Try shared server cache (faster – no CORS proxy)
+  const serverPuzzle = await fetchPuzzleFromServer(date);
+  if (serverPuzzle) {
+    console.log(`Using server-cached puzzle for ${date}`);
+    cachePuzzle(date, serverPuzzle);
+    return serverPuzzle;
+  }
+
+  // Fall back to NYT direct fetch via CORS proxy
   const puzzle = await fetchNYTPuzzle(date);
   cachePuzzle(date, puzzle);
   return puzzle;
