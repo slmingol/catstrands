@@ -689,6 +689,14 @@
     min-height: 0;
     font-size: 1.1rem;
     border-radius: 6px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .try-again-button {
+    margin-left: 0;
+    padding: 8px 16px;
+    font-size: 0.9rem;
   }
 
   .victory-banner-hidden {
@@ -699,12 +707,29 @@
     margin: 0;
   }
 
-  .found-words {
-    margin-top: 0;
-    margin-bottom: 8px;
-  }
+.try-again-button {
+  background: #4caf50;
+  color: white;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 24px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-left: 16px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
 
-  .found-words h3 {
+.try-again-button:hover {
+  background: #45a049;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.try-again-button:active {
+  transform: translateY(0);
+}
     margin-bottom: 8px;
     font-size: 1.2rem;
   }

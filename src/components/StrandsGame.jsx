@@ -398,11 +398,47 @@ function StrandsGame({ puzzle, puzzleDate }) {
     setMessage('🔍 All words revealed!');
   };
 
+  const handleTryAgain = () => {
+    // Clear all game state (but stats already recorded, so they persist)
+    setFoundWords([]);
+    setFoundWordPaths([]);
+    setUsedCells(new Set());
+    setHintsUsed(0);
+    setRevealedHints([]);
+    setNonSolutionWords([]);
+    setHintProgress(0);
+    setEarnedHints(0);
+    setHintedCells([]);
+    setPuzzleRevealed(false);
+    setStatsRecorded(false); // Allow recording stats again for this attempt
+    setSelectedCells([]);
+    setCurrentWord('');
+    setMessage('');
+    
+    // Clear saved game state for this puzzle
+    const stateKey = puzzleDate 
+      ? `game-state-${puzzleDate}`
+      : `game-state-${puzzle.theme || 'custom'}`;
+    localStorage.removeItem(stateKey);
+    
+    // Record a new game start
+    recordGameStart();
+    
+    console.log('🔄 Game reset - try again!');
+  };
+
   return (
     <div className="strands-game">
       
       <div className={`victory-banner ${!(isGameWon && !puzzleRevealed) ? 'victory-banner-hidden' : ''}`}>
-        {isGameWon && !puzzleRevealed && '🎉 Perfect! You found all words including the spangram!'}
+        {isGameWon && !puzzleRevealed && (
+          <>
+            <span>🎉 Perfect! You found all words including the spangram!</span>
+            <button className="try-again-button" onClick={handleTryAgain}>
+              🔄 Try Again
+            </button>
+          </>
+        )}
       </div>
       
       <div className="game-content">
