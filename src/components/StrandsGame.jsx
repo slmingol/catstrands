@@ -431,14 +431,7 @@ function StrandsGame({ puzzle, puzzleDate }) {
     <div className="strands-game">
       
       <div className={`victory-banner ${!(isGameWon && !puzzleRevealed) ? 'victory-banner-hidden' : ''}`}>
-        {isGameWon && !puzzleRevealed && (
-          <>
-            <span>🎉 Perfect! You found all words including the spangram!</span>
-            <button className="try-again-button" onClick={handleTryAgain}>
-              🔄 Try Again
-            </button>
-          </>
-        )}
+        {isGameWon && !puzzleRevealed && '🎉 Perfect! You found all words including the spangram!'}
       </div>
       
       <div className="game-content">
@@ -483,6 +476,14 @@ function StrandsGame({ puzzle, puzzleDate }) {
           >
             🔍 Reveal
           </button>
+          {isGameWon && (
+            <button 
+              className="try-again-button"
+              onClick={handleTryAgain}
+            >
+              🔄 Try Again
+            </button>
+          )}
           <div className="hint-info">
             {hintProgress > 0 && earnedHints === 0 && (
               <div className="hint-progress">{hintProgress}/3 words towards hint</div>

@@ -694,9 +694,9 @@
   }
 
   .try-again-button {
-    margin-left: 0;
-    padding: 8px 16px;
-    font-size: 0.9rem;
+    padding: 10px 24px;
+    font-size: 1.1rem;
+    min-width: 130px;
   }
 
   .victory-banner-hidden {
@@ -708,23 +708,23 @@
   }
 
 .try-again-button {
-  background: #4caf50;
-  color: white;
-  border: none;
-  padding: 10px 24px;
-  border-radius: 24px;
+  background: white;
+  border: 2px solid #ddd6cc;
+  color: #333;
+  padding: 12px 32px;
+  border-radius: 30px;
   font-size: 1rem;
-  font-weight: 600;
+  font-weight: bold;
   cursor: pointer;
   transition: all 0.2s;
-  margin-left: 16px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .try-again-button:hover {
-  background: #45a049;
+  background: #f5f5f5;
+  border-color: #c5beb5;
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 .try-again-button:active {
