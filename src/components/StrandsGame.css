@@ -491,6 +491,13 @@
   min-width: 192px;
 }
 
+.try-again-button {
+  padding: 6.9px 34.5px;
+  font-size: 0.834rem;
+  min-width: 110px;
+  border-radius: 13.8px;
+}
+
 .hint-button:hover:not(:disabled),
 .reveal-button:hover:not(:disabled),
 .try-again-button:hover {
