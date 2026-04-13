@@ -220,7 +220,9 @@ function App() {
   const goToPreviousPuzzle = async () => {
     if (!currentPuzzleDate) return;
     
-    const currentDate = new Date(currentPuzzleDate);
+    // Parse date parts to avoid timezone issues
+    const [year, month, day] = currentPuzzleDate.split('-').map(Number);
+    const currentDate = new Date(year, month - 1, day);
     const prevDate = new Date(currentDate);
     prevDate.setDate(prevDate.getDate() - 1);
     
@@ -238,7 +240,9 @@ function App() {
   const goToNextPuzzle = async () => {
     if (!currentPuzzleDate) return;
     
-    const currentDate = new Date(currentPuzzleDate);
+    // Parse date parts to avoid timezone issues
+    const [year, month, day] = currentPuzzleDate.split('-').map(Number);
+    const currentDate = new Date(year, month - 1, day);
     const nextDate = new Date(currentDate);
     nextDate.setDate(nextDate.getDate() + 1);
     
@@ -538,7 +542,9 @@ function App() {
   // Format the date for display
   const getDisplayDate = () => {
     if (currentPuzzleDate) {
-      const date = new Date(currentPuzzleDate + 'T00:00:00'); // Ensure it's treated as local time
+      // Parse date parts to avoid timezone issues
+      const [year, month, day] = currentPuzzleDate.split('-').map(Number);
+      const date = new Date(year, month - 1, day); // month is 0-indexed
       const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
       return date.toLocaleDateString('en-US', options);
     }
@@ -551,7 +557,9 @@ function App() {
   // Check if we can navigate to previous/next puzzles
   const canGoPrevious = () => {
     if (!currentPuzzleDate || !useNYT) return false;
-    const currentDate = new Date(currentPuzzleDate);
+    // Parse date parts to avoid timezone issues
+    const [year, month, day] = currentPuzzleDate.split('-').map(Number);
+    const currentDate = new Date(year, month - 1, day);
     const prevDate = new Date(currentDate);
     prevDate.setDate(prevDate.getDate() - 1);
     return prevDate >= STRANDS_LAUNCH_DATE;
@@ -559,7 +567,9 @@ function App() {
 
   const canGoNext = () => {
     if (!currentPuzzleDate || !useNYT) return false;
-    const currentDate = new Date(currentPuzzleDate);
+    // Parse date parts to avoid timezone issues
+    const [year, month, day] = currentPuzzleDate.split('-').map(Number);
+    const currentDate = new Date(year, month - 1, day);
     const nextDate = new Date(currentDate);
     nextDate.setDate(nextDate.getDate() + 1);
     const today = new Date();
