@@ -582,6 +582,97 @@
   box-shadow: none;
 }
 
+@keyframes victoryBounce {
+  0% {
+    transform: translateY(-20px) scale(0.8);
+    opacity: 0;
+  }
+  50% {
+    transform: translateY(5px) scale(1.05);
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+/* Shimmer effect for found words */
+.cell.shimmer {
+  animation: cellShimmer 0.8s ease-out;
+}
+
+@keyframes cellShimmer {
+  0% {
+    box-shadow: 0 0 0 rgba(139, 206, 227, 0);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(139, 206, 227, 0.8), 0 0 30px rgba(139, 206, 227, 0.4);
+  }
+  100% {
+    box-shadow: 0 0 0 rgba(139, 206, 227, 0);
+  }
+}
+
+.cell.shimmer.spangram {
+  animation: spangramShimmer 0.8s ease-out;
+}
+
+@keyframes spangramShimmer {
+  0% {
+    box-shadow: 0 0 0 rgba(251, 191, 36, 0);
+  }
+  50% {
+    box-shadow: 0 0 25px rgba(251, 191, 36, 1), 0 0 40px rgba(253, 224, 71, 0.6);
+  }
+  100% {
+    box-shadow: 0 0 0 rgba(251, 191, 36, 0);
+  }
+}
+
+/* Wave effect through completed words */
+.cell.wave {
+  animation: cellWave 0.6s ease-in-out;
+}
+
+@keyframes cellWave {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+/* Background pulse on victory */
+.strands-game.victory-pulse {
+  animation: backgroundPulse 2s ease-in-out;
+}
+
+@keyframes backgroundPulse {
+  0%, 100% {
+    background: white;
+  }
+  50% {
+    background: linear-gradient(135deg, #fff9e6 0%, #fffaf0 100%);
+  }
+}
+
+/* Enhanced spangram glow */
+.cell.spangram-glow {
+  animation: spangramGlow 1.5s ease-in-out infinite;
+}
+
+@keyframes spangramGlow {
+  0%, 100% {
+    border-color: #fde047;
+    box-shadow: 0 0 5px rgba(251, 191, 36, 0.3);
+  }
+  50% {
+    border-color: #fbbf24;
+    box-shadow: 0 0 15px rgba(251, 191, 36, 0.6), 0 0 25px rgba(253, 224, 71, 0.4);
+  }
+}
+
 @media (max-width: 900px) {
   .strands-game {
     width: 100%;

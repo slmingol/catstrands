@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import './StrandsGame.css';
 import { recordGameCompletion, recordGameStart } from '../utils/statsManager';
 import { saveGameState, loadGameState } from '../utils/gameStateManager';
+import Confetti from './Confetti';
 
 function StrandsGame({ puzzle, puzzleDate }) {
   const { grid, words, spangram, theme, rows, cols } = puzzle;
@@ -22,6 +23,10 @@ function StrandsGame({ puzzle, puzzleDate }) {
   const [animatingCells, setAnimatingCells] = useState(new Set()); // Cells currently animating
   const [hintedCells, setHintedCells] = useState([]); // Cells that are part of a hint
   const [puzzleRevealed, setPuzzleRevealed] = useState(false); // Track if puzzle was revealed
+  const [shimmerCells, setShimmerCells] = useState(new Set()); // Cells with shimmer effect
+  const [waveCells, setWaveCells] = useState(new Set()); // Cells with wave effect
+  const [showConfetti, setShowConfetti] = useState(false); // Confetti celebration
+  const [victoryPulse, setVictoryPulse] = useState(false); // Background pulse on victory
   const gridRef = useRef(null);
 
   // Check if game is won
@@ -38,6 +43,15 @@ function StrandsGame({ puzzle, puzzleDate }) {
       const totalWords = words.length + 1; // +1 for spangram
       recordGameCompletion(hintsUsed, foundWords.length, totalWords);
       setStatsRecorded(true);
+      
+      // Trigger celebration effects
+      setShowConfetti(true);
+      setVictoryPulse(true);
+      
+      // Clear victory pulse after animation
+      setTimeout(() => {
+        setVictoryPulse(false);
+      }, 2000);
     }
   }, [isGameWon, statsRecorded, hintsUsed, foundWords.length, words.length]);
 
@@ -243,6 +257,18 @@ function StrandsGame({ puzzle, puzzleDate }) {
         setTimeout(() => {
           setAnimatingCells(prev => new Set([...prev, cellIndex]));
           
+          // Add shimmer effect
+          setTimeout(() => {
+            setShimmerCells(prev => new Set([...prev, cellIndex]));
+            setTimeout(() => {
+              setShimmerCells(prev => {
+                const next = new Set(prev);
+                next.delete(cellIndex);
+                return next;
+              });
+            }, 800);
+          }, 300);
+          
           // Remove from animating after animation completes
           setTimeout(() => {
             setAnimatingCells(prev => {
@@ -253,6 +279,22 @@ function StrandsGame({ puzzle, puzzleDate }) {
           }, 400); // Match animation duration
         }, i * 60); // Stagger by 60ms per cell
       });
+      
+      // Trigger wave effect after shimmer
+      setTimeout(() => {
+        cellsToAnimate.forEach((cellIndex, i) => {
+          setTimeout(() => {
+            setWaveCells(prev => new Set([...prev, cellIndex]));
+            setTimeout(() => {
+              setWaveCells(prev => {
+                const next = new Set(prev);
+                next.delete(cellIndex);
+                return next;
+              });
+            }, 600);
+          }, i * 40); // Faster wave propagation
+        });
+      }, 800);
       
       setFoundWords([...foundWords, word]);
       setFoundWordPaths([...foundWordPaths, { word, cells: [...selectedCells], isSpangram }]); // Store the path
@@ -306,9 +348,27 @@ function StrandsGame({ puzzle, puzzleDate }) {
       const spangramPath = foundWordPaths.find(wp => wp.isSpangram);
       if (spangramPath && spangramPath.cells.includes(index)) {
         classes.push('spangram');
+        // Add continuous glow to spangram cells
+        if (isGameWon) {
+          classes.push('spangram-glow');
+        }
       }
     } else if (selectedCells.includes(index)) {
       classes.push('selected');
+    }
+    
+    // Add shimmer effect
+    if (shimmerCells.has(index)) {
+      classes.push('shimmer');
+      const spangramPath = foundWordPaths.find(wp => wp.isSpangram);
+      if (spangramPath && spangramPath.cells.includes(index)) {
+        classes.push('spangram');
+      }
+    }
+    
+    // Add wave effect
+    if (waveCells.has(index)) {
+      classes.push('wave');
     }
     
     // Add hint class if this cell is part of a hint (and not yet found)
@@ -428,7 +488,9 @@ function StrandsGame({ puzzle, puzzleDate }) {
   };
 
   return (
-    <div className="strands-game">
+    <div className={`strands-game ${victoryPulse ? 'victory-pulse' : ''}`}>
+      
+      <Confetti active={showConfetti} />
       
       <div className={`victory-banner ${!(isGameWon && !puzzleRevealed) ? 'victory-banner-hidden' : ''}`}>
         {isGameWon && !puzzleRevealed && '🎉 Perfect! You found all words including the spangram!'}
