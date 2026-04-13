@@ -80,7 +80,7 @@ function App() {
     const autoFetchRecentPuzzles = async () => {
       const LAST_AUTO_FETCH_KEY = 'nyt-strands-last-auto-fetch';
       const lastFetch = localStorage.getItem(LAST_AUTO_FETCH_KEY);
-      const today = new Date().toISOString().split('T')[0];
+      const today = getTodayDateString();
       
       // Skip if already fetched today
       if (lastFetch === today) {
@@ -99,7 +99,10 @@ function App() {
         // Skip if before launch date
         if (date < STRANDS_LAUNCH_DATE) break;
         
-        const dateStr = date.toISOString().split('T')[0];
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const dateStr = `${year}-${month}-${day}`;
         dates.push(dateStr);
       }
       
@@ -259,16 +262,25 @@ function App() {
     await loadPuzzleByDate(nextDateStr);
   };
 
+  // Get today's date in local timezone (not UTC)
+  const getTodayDateString = () => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
   // Go to today's puzzle
   const goToToday = async () => {
-    const today = new Date().toISOString().split('T')[0];
+    const today = getTodayDateString();
     await loadPuzzleByDate(today);
   };
 
   // Check if we're viewing today's puzzle
   const isViewingToday = () => {
     if (!currentPuzzleDate) return false;
-    const today = new Date().toISOString().split('T')[0];
+    const today = getTodayDateString();
     return currentPuzzleDate === today;
   };
 
@@ -280,7 +292,7 @@ function App() {
 
       if (useNYT) {
         try {
-          const today = new Date().toISOString().split('T')[0];
+          const today = getTodayDateString();
           const nytPuzzle = await fetchPuzzleWithCache(today, true);
           setCurrentPuzzle(nytPuzzle);
           setCurrentPuzzleDate(today);
@@ -521,7 +533,7 @@ function App() {
       
       // Reload current puzzle if using NYT
       if (useNYT) {
-        const today = new Date().toISOString().split('T')[0];
+        const today = getTodayDateString();
         const puzzle = await fetchPuzzleWithCache(today);
         setCurrentPuzzle(puzzle);
       }
