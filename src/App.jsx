@@ -10,6 +10,7 @@ import {
   fetchPuzzleWithCache, 
   fetchAndCacheRecentPuzzles, 
   getCacheMetadata,
+  getCachedPuzzle,
   clearCache,
   fetchNYTPuzzle,
   cachePuzzle,
@@ -74,7 +75,7 @@ function App() {
     return () => clearInterval(interval);
   }, []);
 
-  // Auto-fetch recent puzzles (last 7 days) once per day
+  // Auto-fetch recent puzzles (last 7 days) once per day - RUNS IN BACKGROUND
   useEffect(() => {
     const autoFetchRecentPuzzles = async () => {
       const LAST_AUTO_FETCH_KEY = 'nyt-strands-last-auto-fetch';
@@ -83,10 +84,11 @@ function App() {
       
       // Skip if already fetched today
       if (lastFetch === today) {
+        console.log('✅ Auto-fetch already ran today, skipping');
         return;
       }
       
-      console.log('🔄 Auto-checking for new puzzles...');
+      console.log('🔄 Auto-checking for new puzzles (background)...');
       
       // Fetch last 7 days of puzzles
       const dates = [];
@@ -101,19 +103,31 @@ function App() {
         dates.push(dateStr);
       }
       
+      // First, quickly check which puzzles are missing from cache
+      const missingDates = dates.filter(dateStr => !getCachedPuzzle(dateStr));
+      
+      if (missingDates.length === 0) {
+        console.log('✅ All recent puzzles already cached');
+        localStorage.setItem(LAST_AUTO_FETCH_KEY, today);
+        return;
+      }
+      
+      console.log(`📥 Fetching ${missingDates.length} missing puzzle(s)...`);
+      
       let newPuzzles = 0;
-      for (const dateStr of dates) {
+      for (const dateStr of missingDates) {
         try {
-          // fetchPuzzleWithCache will check cache first
+          // Fetch and cache the missing puzzle
           const puzzle = await fetchPuzzleWithCache(dateStr, true);
           if (puzzle) {
             newPuzzles++;
+            console.log(`✅ Fetched ${dateStr}`);
           }
           // Small delay to be nice to the API
           await new Promise(resolve => setTimeout(resolve, 300));
         } catch (error) {
           // Silently fail - user can manually fetch if needed
-          console.log(`Skipped ${dateStr}:`, error.message);
+          console.log(`⏭️  Skipped ${dateStr}:`, error.message);
         }
       }
       
@@ -134,12 +148,17 @@ function App() {
       localStorage.setItem(LAST_AUTO_FETCH_KEY, today);
     };
     
-    // Run on mount and once per day
-    autoFetchRecentPuzzles();
+    // Delay auto-fetch to run AFTER initial puzzle loads (non-blocking)
+    const timeoutId = setTimeout(() => {
+      autoFetchRecentPuzzles();
+    }, 1000); // Wait 1 second after mount
     
     const interval = setInterval(autoFetchRecentPuzzles, 1000 * 60 * 60 * 24); // Every 24 hours
     
-    return () => clearInterval(interval);
+    return () => {
+      clearTimeout(timeoutId);
+      clearInterval(interval);
+    };
   }, []);
 
   // Update cache metadata
@@ -148,7 +167,7 @@ function App() {
     setCacheMetadata(meta);
   };
 
-  // Auto-restore cache from server on mount
+  // Auto-restore cache from server on mount - RUNS IN BACKGROUND
   useEffect(() => {
     const restoreCache = async () => {
       try {
@@ -163,7 +182,12 @@ function App() {
       }
     };
     
-    restoreCache();
+    // Delay restore to run AFTER initial puzzle loads (non-blocking)
+    const timeoutId = setTimeout(() => {
+      restoreCache();
+    }, 500); // Wait 500ms after mount
+    
+    return () => clearTimeout(timeoutId);
   }, []);
 
   // Get puzzle based on current date from local puzzles
