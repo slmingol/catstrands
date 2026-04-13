@@ -1,21 +1,53 @@
 // Utility to fetch NYT Strands puzzles for personal use
-// Fetches from: https://www.nytimes.com/svc/strands/v2/{date}.json
-// Uses CORS proxy (api.allorigins.win) to bypass browser restrictions
+// Fetches from server cache first, then falls back to NYT with CORS proxy
+
+// Server API base URL - proxy through nginx in production
+const API_BASE = import.meta.env.VITE_API_URL || 
+  (import.meta.env.PROD ? '' : 'http://localhost:3001');
 
 /**
  * Fetch NYT Strands puzzle by date with retry logic
+ * Tries server cache first, falls back to direct NYT fetch with CORS proxy
  * @param {string} date - Date in YYYY-MM-DD format
  * @param {number} retries - Number of retry attempts (default: 3)
  * @returns {Promise<Object>} Puzzle data in game format
  */
 export async function fetchNYTPuzzle(date, retries = 3) {
+  // First try: fetch from server cache
+  try {
+    console.log(`🌐 Fetching puzzle for ${date} from server...`);
+    const response = await fetch(`${API_BASE}/api/puzzle/${date}`);
+    
+    if (response.ok) {
+      const data = await response.json();
+      if (data.success && data.puzzle) {
+        console.log(`${data.fromCache ? '📦' : '✅'} Puzzle loaded from server ${data.fromCache ? '(cached)' : '(fresh)'}`);
+        return data.puzzle;
+      }
+    }
+    
+    // If server returns 404, puzzle doesn't exist - don't try fallback
+    if (response.status === 404) {
+      throw new Error('Puzzle not found (404)');
+    }
+    
+    console.warn(`Server fetch failed (${response.status}), falling back to direct NYT fetch...`);
+  } catch (error) {
+    // If it's a 404, don't try fallback
+    if (error.message.includes('404')) {
+      throw error;
+    }
+    console.warn('Server unavailable, falling back to direct NYT fetch...');
+  }
+  
+  // Fallback: fetch directly from NYT with CORS proxy
   for (let attempt = 1; attempt <= retries; attempt++) {
     try {
-      // Use CORS proxy to bypass browser CORS restrictions
       const nytUrl = `https://www.nytimes.com/svc/strands/v2/${date}.json`;
       const corsProxy = 'https://api.allorigins.win/raw?url=';
       const url = `${corsProxy}${encodeURIComponent(nytUrl)}`;
       
+      console.log(`🔄 Attempt ${attempt}: Fetching from NYT via CORS proxy...`);
       const response = await fetch(url);
       
       if (!response.ok) {

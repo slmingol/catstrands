@@ -14,7 +14,9 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = process.env.PORT || 3001;
 const CACHE_FILE = process.env.CACHE_FILE || path.join(__dirname, '../data/cache-backup.json');
+const PUZZLE_CACHE_FILE = path.join(__dirname, '../data/puzzle-cache.json');
 const MAX_BACKUPS = 5;
+const STRANDS_LAUNCH_DATE = new Date('2024-03-04');
 
 // Middleware
 app.use(cors());
@@ -236,11 +238,206 @@ app.get('/api/cache/backups', async (req, res) => {
   }
 });
 
+// ============= PUZZLE CACHING FUNCTIONS =============
+
+// Load puzzle cache from disk
+async function loadPuzzleCache() {
+  try {
+    const data = await fs.readFile(PUZZLE_CACHE_FILE, 'utf-8');
+    return JSON.parse(data);
+  } catch (error) {
+    return {}; // Return empty cache if file doesn't exist
+  }
+}
+
+// Save puzzle cache to disk
+async function savePuzzleCache(cache) {
+  await fs.writeFile(PUZZLE_CACHE_FILE, JSON.stringify(cache, null, 2), 'utf-8');
+}
+
+// Fetch puzzle from NYT
+async function fetchNYTPuzzle(date) {
+  const nytUrl = `https://www.nytimes.com/svc/strands/v2/${date}.json`;
+  
+  const response = await fetch(nytUrl);
+  
+  if (!response.ok) {
+    if (response.status === 404) {
+      throw new Error('Puzzle not found');
+    }
+    throw new Error(`HTTP ${response.status}`);
+  }
+  
+  const data = await response.json();
+  
+  // Convert NYT format to game format
+  const grid = data.startingBoard.flatMap(row => row.split(''));
+  
+  return {
+    rows: 8,
+    cols: 6,
+    theme: data.clue,
+    spangram: data.spangram,
+    grid: grid,
+    words: data.themeWords,
+    _coords: {
+      theme: data.themeCoords,
+      spangram: data.spangramCoords
+    }
+  };
+}
+
+// Auto-fetch recent puzzles (runs periodically)
+async function autoFetchRecentPuzzles(days = 7) {
+  console.log(`🔄 Auto-fetching last ${days} days of puzzles...`);
+  
+  const cache = await loadPuzzleCache();
+  let fetched = 0;
+  let skipped = 0;
+  
+  for (let i = 0; i < days; i++) {
+    const date = new Date();
+    date.setDate(date.getDate() - i);
+    
+    // Skip dates before launch
+    if (date < STRANDS_LAUNCH_DATE) {
+      continue;
+    }
+    
+    const dateStr = date.toISOString().split('T')[0];
+    
+    // Skip if already cached
+    if (cache[dateStr]) {
+      skipped++;
+      continue;
+    }
+    
+    try {
+      const puzzle = await fetchNYTPuzzle(dateStr);
+      cache[dateStr] = {
+        puzzle,
+        cachedAt: new Date().toISOString()
+      };
+      await savePuzzleCache(cache);
+      fetched++;
+      console.log(`✅ Fetched and cached puzzle for ${dateStr}`);
+      
+      // Delay to be nice to the API
+      await new Promise(resolve => setTimeout(resolve, 500));
+    } catch (error) {
+      console.log(`⏭️  Skipped ${dateStr}: ${error.message}`);
+    }
+  }
+  
+  console.log(`📦 Auto-fetch complete: ${fetched} new, ${skipped} cached`);
+  return { fetched, skipped };
+}
+
+// ============= PUZZLE API ENDPOINTS =============
+
+// Get puzzle by date (from server cache or fetch from NYT)
+app.get('/api/puzzle/:date', async (req, res) => {
+  try {
+    const { date } = req.params;
+    
+    // Validate date format
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+      return res.status(400).json({ error: 'Invalid date format. Use YYYY-MM-DD' });
+    }
+    
+    // Load cache
+    const cache = await loadPuzzleCache();
+    
+    // Check if puzzle is in cache
+    if (cache[date]) {
+      console.log(`📦 Serving cached puzzle for ${date}`);
+      return res.json({
+        success: true,
+        puzzle: cache[date].puzzle,
+        fromCache: true,
+        cachedAt: cache[date].cachedAt
+      });
+    }
+    
+    // Fetch from NYT
+    console.log(`🌐 Fetching puzzle for ${date} from NYT...`);
+    const puzzle = await fetchNYTPuzzle(date);
+    
+    // Cache it
+    cache[date] = {
+      puzzle,
+      cachedAt: new Date().toISOString()
+    };
+    await savePuzzleCache(cache);
+    
+    console.log(`✅ Fetched and cached puzzle for ${date}`);
+    
+    res.json({
+      success: true,
+      puzzle,
+      fromCache: false,
+      cachedAt: cache[date].cachedAt
+    });
+  } catch (error) {
+    console.error(`Failed to get puzzle for ${req.params.date}:`, error);
+    res.status(error.message.includes('not found') ? 404 : 500).json({
+      error: error.message
+    });
+  }
+});
+
+// Get puzzle cache stats
+app.get('/api/puzzle/cache/stats', async (req, res) => {
+  try {
+    const cache = await loadPuzzleCache();
+    const dates = Object.keys(cache).sort();
+    
+    res.json({
+      success: true,
+      count: dates.length,
+      oldest: dates[0] || null,
+      newest: dates[dates.length - 1] || null,
+      dates: dates
+    });
+  } catch (error) {
+    console.error('Failed to get cache stats:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Trigger manual fetch of recent puzzles
+app.post('/api/puzzle/fetch-recent', async (req, res) => {
+  try {
+    const { days = 7 } = req.body;
+    const result = await autoFetchRecentPuzzles(days);
+    
+    res.json({
+      success: true,
+      fetched: result.fetched,
+      skipped: result.skipped
+    });
+  } catch (error) {
+    console.error('Failed to fetch recent puzzles:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 app.listen(PORT, () => {
   console.log('\n' + '='.repeat(60));
   console.log(`🐱  CatStrands Cache Server v${pkg.version}`);
   console.log('='.repeat(60));
   console.log(`   Server running on port ${PORT}`);
   console.log(`   Cache file: ${CACHE_FILE}`);
+  console.log(`   Puzzle cache: ${PUZZLE_CACHE_FILE}`);
   console.log('='.repeat(60) + '\n');
+  
+  // Auto-fetch puzzles on startup (after 10 seconds)
+  setTimeout(async () => {
+    await autoFetchRecentPuzzles(7);
+  }, 10000);
+  
+  // Auto-fetch puzzles every 6 hours
+  setInterval(async () => {
+    await autoFetchRecentPuzzles(7);
+  }, 1000 * 60 * 60 * 6); // Every 6 hours
 });
