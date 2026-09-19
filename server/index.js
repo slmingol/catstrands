@@ -423,13 +423,19 @@ app.post('/api/puzzle/fetch-recent', async (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log('\n' + '='.repeat(60));
-  console.log(`🐱  CatStrands Cache Server v${pkg.version}`);
-  console.log('='.repeat(60));
-  console.log(`   Server running on port ${PORT}`);
-  console.log(`   Cache file: ${CACHE_FILE}`);
-  console.log(`   Puzzle cache: ${PUZZLE_CACHE_FILE}`);
-  console.log('='.repeat(60) + '\n');
+  const C = '\x1b[36m';   // cyan
+  const B = '\x1b[1m';    // bold
+  const D = '\x1b[2m';    // dim
+  const R = '\x1b[0m';    // reset
+  console.log(`
+${C}   /\\_/\\${R}
+${C}  ( ^.^ )${R}  ${B}CatStrands${R}  v${pkg.version}
+${C}   > - <${R}  ${D}Cache Server${R}
+
+  ${D}port   ${R}${PORT}
+  ${D}cache  ${R}${CACHE_FILE}
+  ${D}puzzles${R}  ${PUZZLE_CACHE_FILE}
+`);
   
   // Auto-fetch puzzles on startup (after 10 seconds)
   setTimeout(async () => {
